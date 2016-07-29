@@ -55,4 +55,137 @@ describe('animation', function() {
       expect(p.points).toEqual([[1, 1], [2, 2], [2, 1], [1, 1]]);
     });
   });
+
+  function FakeClock() {
+    this.now = 0;
+  }
+
+  function FakeAnimation(clock, inverseParent) {
+    this.clock = clock;
+    this.inverseParent = inverseParent;
+  }
+
+  FakeAnimation.prototype.run = function(time, doneCallback) {
+    this.startTime = this.clock.now;
+    this.runTime = time;
+    this.runDoneCallback = doneCallback;
+  };
+
+  FakeAnimation.prototype.finishRun = function() {
+    this.endTime = this.clock.now;
+    if (this.runDoneCallback !== undefined) {
+      this.runDoneCallback();
+    }
+  };
+
+  FakeAnimation.prototype.invert = function() {
+    return new FakeAnimation(this.clock, this);
+  };
+
+  describe('SimultaneousAnimation', function() {
+    it('run', function() {
+      var c = new FakeClock();
+      var a1 = new FakeAnimation(c);
+      var a2 = new FakeAnimation(c);
+      var a = new SimultaneousAnimation([a1, a2]);
+
+      var done = false;
+      a.run(1000, function() { done = true; });
+
+      expect(done).toBe(false);
+      expect(a1.startTime).toBe(0);
+      expect(a1.runTime).toBe(1000);
+      expect(a1.endTime).toBe(undefined);
+      expect(a2.startTime).toBe(0);
+      expect(a2.runTime).toBe(1000);
+      expect(a2.endTime).toBe(undefined);
+
+      c.now += 1000;
+      a2.finishRun();
+
+      expect(done).toBe(false);
+      expect(a1.startTime).toBe(0);
+      expect(a1.runTime).toBe(1000);
+      expect(a1.endTime).toBe(undefined);
+      expect(a2.startTime).toBe(0);
+      expect(a2.runTime).toBe(1000);
+      expect(a2.endTime).toBe(1000);
+
+      a1.finishRun();
+
+      expect(done).toBe(true);
+      expect(a1.startTime).toBe(0);
+      expect(a1.runTime).toBe(1000);
+      expect(a1.endTime).toBe(1000);
+      expect(a2.startTime).toBe(0);
+      expect(a2.runTime).toBe(1000);
+      expect(a2.endTime).toBe(1000);
+    });
+
+    it('run with no callback', function() {
+      var c = new FakeClock();
+      var a1 = new FakeAnimation(c);
+      var a2 = new FakeAnimation(c);
+      var a = new SimultaneousAnimation([a1, a2]);
+
+      // Should not try to run a nonexistent callback.
+      a.run(1000);
+
+      c.now += 1000;
+      a2.finishRun();
+      a1.finishRun();
+
+      expect(a1.startTime).toBe(0);
+      expect(a1.runTime).toBe(1000);
+      expect(a1.endTime).toBe(1000);
+      expect(a2.startTime).toBe(0);
+      expect(a2.runTime).toBe(1000);
+      expect(a2.runTime).toBe(1000);
+    });
+
+    it('invert', function() {
+      var c = new FakeClock();
+      var a1 = new FakeAnimation(c);
+      var a2 = new FakeAnimation(c);
+      var a = new SimultaneousAnimation([a1, a2]).invert();
+
+      var a1i = a._as[0];
+      expect(a1i.inverseParent).toBe(a1);
+
+      var a2i = a._as[1];
+      expect(a2i.inverseParent).toBe(a2);
+
+      var done = false;
+      a.run(1000, function() { done = true; });
+
+      expect(done).toBe(false);
+      expect(a1i.startTime).toBe(0);
+      expect(a1i.runTime).toBe(1000);
+      expect(a1i.endTime).toBe(undefined);
+      expect(a2i.startTime).toBe(0);
+      expect(a2i.runTime).toBe(1000);
+      expect(a2i.endTime).toBe(undefined);
+
+      c.now += 1000;
+      a1i.finishRun();
+
+      expect(done).toBe(false);
+      expect(a1i.startTime).toBe(0);
+      expect(a1i.runTime).toBe(1000);
+      expect(a1i.endTime).toBe(1000);
+      expect(a2i.startTime).toBe(0);
+      expect(a2i.runTime).toBe(1000);
+      expect(a2i.endTime).toBe(undefined);
+
+      a2i.finishRun();
+
+      expect(done).toBe(true);
+      expect(a1i.startTime).toBe(0);
+      expect(a1i.runTime).toBe(1000);
+      expect(a1i.endTime).toBe(1000);
+      expect(a2i.startTime).toBe(0);
+      expect(a2i.runTime).toBe(1000);
+      expect(a2i.endTime).toBe(1000);
+    });
+  });
 });

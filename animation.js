@@ -41,3 +41,29 @@ PathAnimation.prototype.invert = function() {
     this._p, this._x2, this._y2, this._x1, this._y1, -this._th);
 };
 
+// SimultaneousAnimation creates an animation that runs all its given
+// animations simultaneously.
+function SimultaneousAnimation(as) {
+  this._as = as;
+};
+
+SimultaneousAnimation.prototype.run = function(time, doneCallback) {
+  var waitCount = this._as.length;
+  var eachDoneCallback = function() {
+    --waitCount;
+    if (waitCount <= 0) {
+      if (doneCallback !== undefined) {
+        doneCallback();
+      }
+    }
+  };
+  for (var i = 0; i < this._as.length; ++i) {
+    this._as[i].run(time, eachDoneCallback);
+  }
+};
+
+SimultaneousAnimation.prototype.invert = function() {
+  return new SimultaneousAnimation(this._as.map(function(a) {
+    return a.invert();
+   }));
+};
