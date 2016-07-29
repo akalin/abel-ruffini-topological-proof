@@ -2,6 +2,7 @@ This repository contains code for demonstrating Arnold's topological
 proof of the Abel-Ruffini theorem that there is no general solution in
 radicals to polynomial equations of degree five or higher.
 
-For now, it just contains a basic complex number class.
+For now, it just contains some functions for working with complex
+polynomials and their roots.
 
 Tests are in tests.html.
