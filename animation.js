@@ -67,3 +67,32 @@ SimultaneousAnimation.prototype.invert = function() {
     return a.invert();
    }));
 };
+
+// SimultaneousAnimation creates an animation that runs its given
+// animations one after the other.
+function SequentialAnimation(as) {
+  this._as = as;
+};
+
+SequentialAnimation.prototype.run = function(time, doneCallback) {
+  var next = 0;
+  var as = this._as;
+  var runNext = function () {
+    var i = next;
+    ++next;
+    if (i < as.length) {
+      as[i].run(time / as.length, runNext);
+      return;
+    }
+    if (doneCallback !== undefined) {
+      doneCallback();
+    }
+  };
+  runNext();
+};
+
+SequentialAnimation.prototype.invert = function() {
+  return new SequentialAnimation(this._as.map(function(a) {
+    return a.invert();
+   }).slice().reverse());
+};
