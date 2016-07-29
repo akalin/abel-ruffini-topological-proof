@@ -3,6 +3,6 @@ proof of the Abel-Ruffini theorem that there is no general solution in
 radicals to polynomial equations of degree five or higher.
 
 For now, it just contains some functions for working with complex
-polynomials and their roots.
+polynomials, their roots, and continuously moving those roots.
 
 Tests are in tests.html.
