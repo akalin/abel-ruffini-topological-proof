@@ -30,6 +30,14 @@ describe('complex', function() {
     expect(z.im()).toBe(im);
   });
 
+  it('fromPolar', function() {
+    var r = 2;
+    var th = Math.PI / 3;
+    var z = Complex.fromPolar(r, th);
+
+    expect(z).toEqual(new Complex(r * Math.cos(th), r * Math.sin(th)));
+  });
+
   it('toString', function() {
     var re = 3.1;
     var im = 2.5;
@@ -121,5 +129,22 @@ describe('complex', function() {
     var q1 = z1.div(z2);
     var q2 = z1.times(z2.conj());
     expect(q1).toBeCloseToComplex(q2.div(new Complex(z2.absSq(), 0)));
+  });
+
+  it('root', function() {
+    var re = 0.5;
+    var im = Math.sqrt(3)*0.5;
+    var z1 = new Complex(-4 * re, 4 * im);
+    var z2 = new Complex(2 * re, 2 * im);
+    var z1Sqrt1 = z1.root(2);
+    var z1Sqrt2 = z1.root(2, 1);
+
+    expect(z1Sqrt1).toBeCloseToComplex(z2);
+    expect(z1Sqrt1.absSq()).toBeCloseTo(z1.abs());
+    expect(z1Sqrt1.arg()).toBeCloseTo(z1.arg()/2);
+
+    expect(z1Sqrt2).toBeCloseToComplex(z2.neg());
+    expect(z1Sqrt2.absSq()).toBeCloseTo(z1.abs());
+    expect(z1Sqrt2.arg()).toBeCloseTo(z1.arg()/2 - Math.PI);
   });
 });
