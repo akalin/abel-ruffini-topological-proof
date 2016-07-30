@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="jsxgraph.css" />
+  <link rel="stylesheet" type="text/css" href="graph.css" />
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/0.99.5/jsxgraphcore.js"></script>
+  <script type="text/javascript" src="complex.js"></script>
+  <script type="text/javascript" src="complex_poly.js"></script>
+  <script type="text/javascript" src="animation.js"></script>
+  <script type="text/javascript" src="rotation_counter.js"></script>
+  <script type="text/javascript" src="display.js"></script>
+  <script type="text/javascript" src="ui_util.js"></script>
+  <script type="text/javascript" src="complex_formula.js"></script>
+  <script type="text/javascript" src="cubic.js"></script>
+</head>
+
+<div>
+  <div id="rootBoard" class="graph jxgbox"></div>
+  <div id="coeffBoard" class="graph jxgbox"></div>
+  <div id="formulaBoard" class="graph jxgbox"></div>
+</div>
+
+<script type="text/javascript">
+'use strict';
+
+var initialRoots = [
+  new Complex(-1, -0.5), new Complex(0, 1), new Complex(0.5, 0.5)
+];
+
+var display = new Display("rootBoard", "coeffBoard", "formulaBoard",
+                          initialRoots, newCubicCCubedFormula().root(3));
+
+var opA = display.swapRootOp(0, 1, updateRootAndResultList);
+var opB = display.swapRootOp(1, 2, updateRootAndResultList);
+var opAInv = opA.invert();
+var opBInv = opB.invert();
+var opComAB = newCommutatorAnimation(opA, opB);
+var opComABInv = opComAB.invert();
+</script>
+
+R = &lang; <span id="rootList">
+  r<sub>1</sub>, r<sub>2</sub>, r<sub>3</sub>
+</span> &rang;
+
+<br />
+
+X = &lang; <span id="resultList">
+  x<sub>1</sub>, x<sub>2</sub>, x<sub>3</sub>,
+  x<sub>4</sub>, x<sub>5</sub>, x<sub>6</sub>
+</span> &rang;
+
+<br />
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opA, 1000);">
+  A = ↺<sub>1, 2</sub>
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opB, 1000);">
+  B = ↺<sub>2, 3</sub>
+</button>
+
+<br />
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opAInv, 1000);">
+  A&prime; = ↻<sub>1, 2</sub>
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opBInv, 1000);">
+  B&prime; = ↻<sub>2, 3</sub>
+</button>
+
+<br />
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opComAB, 4000);">
+  [A, B] &mapsto; (1 3 2)
+</button>
+
+<br />
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opComABInv, 4000);">
+  [A, B]&prime;
+</button>
+
+<br />
+
+&Delta;<sub>0</sub> = b<sup>2</sup> &minus; 3ac
+
+<br />
+
+&Delta;<sub>1</sub> = 2b<sup>3</sup> &minus; 9abc + 27a<sup>2</sup>d
+
+<br />
+
+Formula:
+<label>
+<input class="disableWhileRunningOp" name="formula" type="radio"
+       onchange="switchFormula(display, cubicScaledDiscFormula);" />
+&minus;27a<sup>2</sup>&Delta; = &Delta;<sub>1</sub><sup>2</sup> &minus; 4&Delta;<sub>0</sub><sup>3</sup>
+</label>
+
+<label>
+<input class="disableWhileRunningOp" name="formula" type="radio"
+       onchange="switchFormula(display, newCubicCCubedFormula());" />
+C<sup>3</sup> = (&Delta;<sub>1</sub> +
+&radic;(&minus;27a<sup>2</sup>&Delta;)) / 2
+</label>
+
+<label>
+<input checked class="disableWhileRunningOp" name="formula" type="radio"
+       onchange="switchFormula(display, newCubicCCubedFormula().root(3));" />
+C
+</label>
+
+<label>
+<input class="disableWhileRunningOp" name="formula" type="radio"
+       onchange="switchFormula(display, newCubicFormula());" />
+x = &minus;(b + C + &Delta;<sub>0</sub>/C)/(3a)
+</label>
+
+<br />
+
+Trace:
+<label>
+<input type="checkbox" onchange="setTrace(display, event);" value="r1" />
+r<sub>1</sub>
+</label>
+
+<label>
+<input type="checkbox" onchange="setTrace(display, event);" value="r2" />
+r<sub>2</sub>
+</label>
+
+<label>
+<input type="checkbox" onchange="setTrace(display, event);" value="r3" />
+r<sub>3</sub>
+</label>
+
+<label>
+<input type="checkbox" onchange="setTrace(display, event);" value="a2" />
+b
+</label>
+
+<label>
+<input type="checkbox" onchange="setTrace(display, event);" value="a1" />
+c
+</label>
+
+<label>
+<input type="checkbox" onchange="setTrace(display, event);" value="a0" />
+d
+</label>
+
+<label class="traceX">
+  <input type="checkbox" onchange="setTrace(display, event);" value="x1" />
+  x<sub>1</sub>
+</label>
+
+<label class="traceX">
+  <input type="checkbox" onchange="setTrace(display, event);" value="x2" />
+  x<sub>2</sub>
+</label>
+
+<label class="traceX">
+  <input type="checkbox" onchange="setTrace(display, event);" value="x3" />
+  x<sub>3</sub>
+</label>
+
+<label class="traceX">
+  <input type="checkbox" onchange="setTrace(display, event);" value="x4" />
+  x<sub>4</sub>
+</label>
+
+<label class="traceX">
+  <input type="checkbox" onchange="setTrace(display, event);" value="x5" />
+  x<sub>5</sub>
+</label>
+
+<label class="traceX">
+  <input type="checkbox" onchange="setTrace(display, event);" value="x6" />
+  x<sub>6</sub>
+</label>
+
+</html>

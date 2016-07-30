@@ -8,6 +8,10 @@ multiplication division, raising to integer powers, and the extraction
 of integer roots) with no radicals cannot be the quadratic
 formula.
 
+Similarly, cubic.html contains a demo page for showing that an
+algebraic formula with at most one nested radical cannot be the cubic
+formula.
+
 Also, this repository contains some functions for working with complex
 polynomials, their roots, and continuously moving those roots.
 
