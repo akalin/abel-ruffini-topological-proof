@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="jsxgraph.css" />
+  <style>
+  .graph {
+    display: inline-block;
+    height: 400px;
+    width: 400px;
+  }
+  </style>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/0.99.5/jsxgraphcore.js"></script>
+  <script type="text/javascript" src="complex.js"></script>
+  <script type="text/javascript" src="complex_poly.js"></script>
+  <script type="text/javascript" src="animation.js"></script>
+  <script type="text/javascript" src="rotation_counter.js"></script>
+  <script type="text/javascript" src="display.js"></script>
+  <script type="text/javascript" src="complex_formula.js"></script>
+  <script type="text/javascript" src="quadratic.js"></script>
+</head>
+
+<div>
+<div id="rootBoard" class="graph jxgbox"></div>
+<div id="coeffBoard" class="graph jxgbox"></div>
+<div id="formulaBoard" class="graph jxgbox"></div>
+</div>
+
+<script type="text/javascript">
+'use strict';
+
+var initialRoots = [ new Complex(1, 0), new Complex(0, 1) ];
+
+var display = new Display("rootBoard", "coeffBoard", "formulaBoard",
+                          initialRoots, quadraticDiscriminantFormula.root(2));
+
+var swapping = false;
+
+function swapRoots(clockwise) {
+  if (swapping) {
+    return;
+  }
+  swapping = true;
+
+  var oldFixed = display.setRootsFixed(true);
+
+  var elems = document.querySelectorAll('.disableWhileSwapping');
+  for (var i = 0; i < elems.length; ++i) {
+    elems[i].disabled = true;
+  }
+
+  var op = display.swapRootOp(0, 1);
+  if (clockwise) {
+    op = op.invert();
+  }
+  op.run(1000, function() {
+    display.setRootsFixed(oldFixed);
+
+    swapping = false;
+
+    for (var i = 0; i < elems.length; ++i) {
+      elems[i].disabled = false;
+    }
+  });
+}
+
+function switchFormula(formula) {
+  if (swapping) {
+    return;
+  }
+  var numResults = display.setFormula(formula);
+  var traceXs = document.querySelectorAll('.traceX');
+  for (var i = 0; i < traceXs.length; ++i) {
+    traceXs[i].querySelector('input').checked = false;
+    traceXs[i].style.display = ((i < numResults) ? '' : 'none');
+  }
+}
+
+function setTrace(event) {
+  var name = event.target.value;
+  var type = name[0];
+  var index = parseInt(name.substring(1));
+  var enable = event.target.checked;
+  if (type == 'r') {
+    --index;
+    if (enable) {
+      display.enableTraceRoot(index);
+    } else {
+      display.disableTraceRoot(index);
+    }
+  }
+  if (type == 'a') {
+    if (enable) {
+      display.enableTraceCoeff(index);
+    } else {
+      display.disableTraceCoeff(index);
+    }
+  }
+  if (type == 'x') {
+    --index;
+    if (enable) {
+      display.enableTraceResult(index);
+    } else {
+      display.disableTraceResult(index);
+    }
+  }
+}
+</script>
+
+<button class="disableWhileSwapping" type="button" onclick="swapRoots(false);">
+  ↺
+</button>
+
+<button class="disableWhileSwapping" type="button" onclick="swapRoots(true);">
+  ↻
+</button>
+
+<br />
+
+Formula:
+<label>
+<input class="disableWhileSwapping" name="formula" type="radio"
+       onchange="switchFormula(quadraticDiscriminantFormula);" />
+&Delta; = b<sup>2</sup> &minus; 4ac
+</label>
+
+<label>
+<input checked class="disableWhileSwapping" name="formula" type="radio"
+       onchange="switchFormula(quadraticDiscriminantFormula.root(2));" />
+&radic;&Delta;
+</label>
+
+<label>
+<input class="disableWhileSwapping" name="formula" type="radio"
+       onchange="switchFormula(newQuadraticFormula());" />
+x = (&minus;b + &radic;&Delta;) / (2a)
+</label>
+
+<br />
+
+Trace:
+<label>
+<input type="checkbox" onchange="setTrace(event);" value="r1" />
+r<sub>1</sub>
+</label>
+
+<label>
+<input type="checkbox" onchange="setTrace(event);" value="r2" />
+r<sub>2</sub>
+</label>
+
+<label>
+<input type="checkbox" onchange="setTrace(event);" value="a1" />
+b
+</label>
+
+<label>
+<input type="checkbox" onchange="setTrace(event);" value="a0" />
+c
+</label>
+
+<label class="traceX">
+  <input type="checkbox" onchange="setTrace(event);" value="x1" />
+  x<sub>1</sub>
+</label>
+
+<label class="traceX">
+  <input type="checkbox" onchange="setTrace(event);" value="x2" />
+  x<sub>2</sub>
+</label>
+
+</html>
