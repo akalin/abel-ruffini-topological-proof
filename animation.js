@@ -100,3 +100,27 @@ SequentialAnimation.prototype.invert = function() {
 function newCommutatorAnimation(a1, a2) {
   return new SequentialAnimation([a2, a1, a2.invert(), a1.invert()])
 }
+
+function SwapAnimation(p1, p2, th) {
+  this._p1 = p1;
+  this._p2 = p2;
+  if (th === undefined) {
+    th = Math.PI/12;
+  }
+  this._th = th;
+}
+
+SwapAnimation.prototype.run = function(time, doneCallback) {
+  var x1 = this._p1.X();
+  var y1 = this._p1.Y();
+  var x2 = this._p2.X();
+  var y2 = this._p2.Y();
+  var a1 = new PathAnimation(this._p1, x1, y1, x2, y2, this._th);
+  var a2 = new PathAnimation(this._p2, x2, y2, x1, y1, this._th);
+  var a = new SimultaneousAnimation([a1, a2]);
+  a.run(time, doneCallback);
+};
+
+SwapAnimation.prototype.invert = function() {
+  return new SwapAnimation(this._p1, this._p2, -this._th);
+};

@@ -310,4 +310,52 @@ describe('animation', function() {
       new SequentialAnimation([a2, a1, a2.invert(), a1.invert()])
     );
   });
+
+  describe('SwapAnimation', function() {
+    it('run', function() {
+      var p1 = new FakePoint(1, 1);
+      var p2 = new FakePoint(2, 2);
+      var a = new SwapAnimation(p1, p2, Math.PI/4);
+
+      var done = false;
+      a.run(1000, function() { done = true; });
+
+      expect(done).toBe(true);
+      expect(p1.points).toEqual([[1, 1], [1, 1], [2, 1], [2, 2]]);
+      expect(p2.points).toEqual([[2, 2], [2, 2], [1, 2], [1, 1]]);
+    });
+
+    it('run with no callback', function() {
+      var p1 = new FakePoint(1, 1);
+      var p2 = new FakePoint(2, 2);
+      var a = new SwapAnimation(p1, p2, Math.PI/4);
+
+      // Should not try to run a nonexistent callback.
+      a.run(1000);
+
+      expect(p1.points).toEqual([[1, 1], [1, 1], [2, 1], [2, 2]]);
+      expect(p2.points).toEqual([[2, 2], [2, 2], [1, 2], [1, 1]]);
+    });
+
+    it('invert', function() {
+      var p1 = new FakePoint(1, 1);
+      var p2 = new FakePoint(2, 2);
+      var a = new SwapAnimation(p1, p2, Math.PI/4).invert();
+
+      var done = false;
+      a.run(1000, function() { done = true; });
+
+      expect(done).toBe(true);
+      expect(p1.points).toEqual([[1, 1], [1, 1], [1, 2], [2, 2]]);
+      expect(p2.points).toEqual([[2, 2], [2, 2], [2, 1], [1, 1]]);
+    });
+
+    it('invert with default', function() {
+      var p1 = new FakePoint(1, 1);
+      var p2 = new FakePoint(2, 2);
+      var a = new SwapAnimation(p1, p2);
+      var aInv = a.invert();
+      expect(aInv._th).toBe(-a._th);
+    });
+  });
 });
