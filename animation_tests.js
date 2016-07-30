@@ -60,9 +60,10 @@ describe('animation', function() {
     this.now = 0;
   }
 
-  function FakeAnimation(clock, inverseParent) {
+  function FakeAnimation(clock, inverseParent, id) {
     this.clock = clock;
     this.inverseParent = inverseParent;
+    this.id = id;
   }
 
   FakeAnimation.prototype.run = function(time, doneCallback) {
@@ -297,5 +298,16 @@ describe('animation', function() {
       expect(a1i.runTime).toBe(500);
       expect(a1i.endTime).toBe(1000);
     });
+  });
+
+  it('newCommutatorAnimation', function() {
+    var c = new FakeClock();
+    var a1 = new FakeAnimation(c, false, 'a1');
+    var a2 = new FakeAnimation(c, false, 'a2');
+    var a = newCommutatorAnimation(a1, a2);
+
+    expect(a).toEqual(
+      new SequentialAnimation([a2, a1, a2.invert(), a1.invert()])
+    );
   });
 });

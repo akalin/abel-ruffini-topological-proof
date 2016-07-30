@@ -96,3 +96,7 @@ SequentialAnimation.prototype.invert = function() {
     return a.invert();
    }).slice().reverse());
 };
+
+function newCommutatorAnimation(a1, a2) {
+  return new SequentialAnimation([a2, a1, a2.invert(), a1.invert()])
+}
