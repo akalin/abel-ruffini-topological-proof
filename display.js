@@ -8,11 +8,32 @@ function pointToComplex(p) {
   return new Complex(p.X(), p.Y());
 }
 
+function getContainingBox(zs) {
+  var minX = 0;
+  var minY = 0;
+  var maxX = 0;
+  var maxY = 0;
+
+  for (var i = 0; i < zs.length; ++i) {
+    minX = Math.min(minX, zs[i].re());
+    minY = Math.min(minY, zs[i].im());
+    maxX = Math.max(maxX, zs[i].re());
+    maxY = Math.max(maxY, zs[i].im());
+  }
+
+  var maxX = Math.max(Math.abs(minX), Math.abs(maxX));
+  var maxY = Math.max(Math.abs(minY), Math.abs(maxY));
+  var maxV = Math.max(Math.max(maxX, maxY), 1e-5);
+  var fudgeFactor = 2;
+
+  maxV *= fudgeFactor;
+
+  return [-maxV, maxV, maxV, -maxV];
+}
+
 function Display(rootBoardDivID, coeffBoardDivID, formulaBoardDivID,
                  initialRoots, formula) {
   var boardOptions = {
-    boundingbox: [-5, 5, 5, -5],
-    keepaspectratio: true,
     axis: true,
     showCopyright: false,
     animationDelay: 10,
@@ -33,6 +54,8 @@ function Display(rootBoardDivID, coeffBoardDivID, formulaBoardDivID,
 
   this._rootBoard.unsuspendUpdate();
 
+  this._rootBoard.setBoundingBox(getContainingBox(initialRoots), true);
+
   this._coeffBoard = JXG.JSXGraph.initBoard(coeffBoardDivID, boardOptions);
   this._coeffBoard.suspendUpdate();
 
@@ -50,6 +73,8 @@ function Display(rootBoardDivID, coeffBoardDivID, formulaBoardDivID,
   this._coeffTraceCurves = [];
 
   this._coeffBoard.unsuspendUpdate();
+
+  this._coeffBoard.setBoundingBox(getContainingBox(coeffs), true);
 
   this._formulaBoard = JXG.JSXGraph.initBoard(formulaBoardDivID, boardOptions);
 
@@ -219,6 +244,8 @@ Display.prototype.setFormula = function(formula) {
   this._resultTraceCurves = [];
 
   this._formulaBoard.unsuspendUpdate();
+
+  this._formulaBoard.setBoundingBox(getContainingBox(results), true);
 
   return results.length;
 };
