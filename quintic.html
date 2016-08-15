@@ -65,6 +65,16 @@ var opC2Inv = opC2.invert();
 var opC3Inv = opC3.invert();
 var opC4Inv = opC4.invert();
 var opC5Inv = opC5.invert();
+var opD1 = newCommutatorAnimation(opC1, opC2);
+var opD2 = newCommutatorAnimation(opC2, opC3);
+var opD3 = newCommutatorAnimation(opC3, opC4);
+var opD4 = newCommutatorAnimation(opC4, opC5);
+var opD5 = newCommutatorAnimation(opC5, opC1);
+var opD1Inv = opD1.invert();
+var opD2Inv = opD2.invert();
+var opD3Inv = opD3.invert();
+var opD4Inv = opD4.invert();
+var opD5Inv = opD5.invert();
 
 var opInfos = [
   {
@@ -141,6 +151,31 @@ var opInfos = [
     name: 'C<sub>5</sub>',
     op: opC5,
     time: 16000
+  },
+  {
+    name: 'D<sub>1</sub>',
+    op: opD1,
+    time: 64000
+  },
+  {
+    name: 'D<sub>2</sub>',
+    op: opD2,
+    time: 64000
+  },
+  {
+    name: 'D<sub>3</sub>',
+    op: opD3,
+    time: 64000
+  },
+  {
+    name: 'D<sub>4</sub>',
+    op: opD4,
+    time: 64000
+  },
+  {
+    name: 'D<sub>5</sub>',
+    op: opD5,
+    time: 64000
   }
 ];
 
@@ -374,6 +409,60 @@ X = &lang; <span id="resultList">
 <button class="disableWhileRunningOp" type="button"
         onclick="runOp(display, opC5Inv, 16000);">
   C<sub>5</sub>&prime;
+</button>
+
+<br />
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opD1, 64000);">
+  D<sub>1</sub> = [C<sub>1</sub>, C<sub>2</sub>] &mapsto; (1 5 4)
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opD2, 64000);">
+  D<sub>2</sub> = [C<sub>2</sub>, C<sub>3</sub>] &mapsto; (2 1 5)
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opD3, 64000);">
+  D<sub>3</sub> = [C<sub>3</sub>, C<sub>4</sub>] &mapsto; (3 2 1)
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opD4, 64000);">
+  D<sub>4</sub> = [C<sub>4</sub>, C<sub>5</sub>] &mapsto; (4 3 2)
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opD5, 64000);">
+  D<sub>5</sub> = [C<sub>5</sub>, C<sub>1</sub>] &mapsto; (5 4 3)
+</button>
+
+<br />
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opD1Inv, 64000);">
+  D<sub>1</sub>&prime;
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opD2Inv, 64000);">
+  D<sub>2</sub>&prime;
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opD3Inv, 64000);">
+  D<sub>3</sub>&prime;
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opD4Inv, 64000);">
+  D<sub>4</sub>&prime;
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opD5Inv, 64000);">
+  D<sub>5</sub>&prime;
 </button>
 
 <br />
