@@ -15,6 +15,11 @@ algebraic formula with at most two nested radicals cannot be the
 quartic formula. (Although note that the quartic formula has not just
 three, but four nested radicals!)
 
+Finally, quintic.html contains a demo page for showing that an
+algebraic formula with any number of nested radicals (i.e., any
+algebraic formula) cannot be the quintic formula, which is the
+Abel-Ruffini theorem.
+
 Also, this repository contains some functions for working with complex
 polynomials, their roots, and continuously moving those roots.
 

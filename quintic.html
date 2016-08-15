@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="jsxgraph.css" />
+  <link rel="stylesheet" type="text/css" href="graph.css" />
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/0.99.5/jsxgraphcore.js"></script>
+  <script type="text/javascript" src="complex.js"></script>
+  <script type="text/javascript" src="complex_poly.js"></script>
+  <script type="text/javascript" src="animation.js"></script>
+  <script type="text/javascript" src="rotation_counter.js"></script>
+  <script type="text/javascript" src="display.js"></script>
+  <script type="text/javascript" src="ui_util.js"></script>
+  <script type="text/javascript" src="complex_formula.js"></script>
+  <script type="text/javascript" src="quintic.js"></script>
+</head>
+
+<div>
+  <div id="rootBoard" class="graph jxgbox"></div>
+  <div id="coeffBoard" class="graph jxgbox"></div>
+  <div id="formulaBoard" class="graph jxgbox"></div>
+</div>
+
+<script type="text/javascript">
+'use strict';
+
+var initialRoots = [
+  new Complex(0, 1), new Complex(0.5, 0.5),
+  new Complex(-0.5, -0.5), new Complex(0.5, -0.5),
+  new Complex(1, 0)
+ ];
+
+var display = new Display(
+  "rootBoard", "coeffBoard", "formulaBoard", initialRoots,
+  quinticDiscFormula.root(2), function() {
+    updateRotationCounterList(display);
+  });
+
+var opA1 = display.swapRootOp(0, 1, updateRootAndResultList);
+var opA2 = display.swapRootOp(1, 2, updateRootAndResultList);
+var opA3 = display.swapRootOp(2, 3, updateRootAndResultList);
+var opA4 = display.swapRootOp(3, 4, updateRootAndResultList);
+var opA5 = display.swapRootOp(4, 0, updateRootAndResultList);
+var opA1Inv = opA1.invert();
+var opA2Inv = opA2.invert();
+var opA3Inv = opA3.invert();
+var opA4Inv = opA4.invert();
+var opA5Inv = opA5.invert();
+var opB1 = newCommutatorAnimation(opA1, opA2);
+var opB2 = newCommutatorAnimation(opA2, opA3);
+var opB3 = newCommutatorAnimation(opA3, opA4);
+var opB4 = newCommutatorAnimation(opA4, opA5);
+var opB5 = newCommutatorAnimation(opA5, opA1);
+var opB1Inv = opB1.invert();
+var opB2Inv = opB2.invert();
+var opB3Inv = opB3.invert();
+var opB4Inv = opB4.invert();
+var opB5Inv = opB5.invert();
+var opC1 = newCommutatorAnimation(opB1, opB3);
+var opC2 = newCommutatorAnimation(opB2, opB4);
+var opC3 = newCommutatorAnimation(opB3, opB5);
+var opC4 = newCommutatorAnimation(opB4, opB1);
+var opC5 = newCommutatorAnimation(opB5, opB2);
+var opC1Inv = opC1.invert();
+var opC2Inv = opC2.invert();
+var opC3Inv = opC3.invert();
+var opC4Inv = opC4.invert();
+var opC5Inv = opC5.invert();
+
+var opInfos = [
+  {
+    name: 'A<sub>1</sub>',
+    op: opA1,
+    time: 1000
+  },
+  {
+    name: 'A<sub>2</sub>',
+    op: opA2,
+    time: 1000
+  },
+  {
+    name: 'A<sub>3</sub>',
+    op: opA3,
+    time: 1000
+  },
+  {
+    name: 'A<sub>4</sub>',
+    op: opA4,
+    time: 1000
+  },
+  {
+    name: 'A<sub>5</sub>',
+    op: opA5,
+    time: 1000
+  },
+  {
+    name: 'B<sub>1</sub>',
+    op: opB1,
+    time: 4000
+  },
+  {
+    name: 'B<sub>2</sub>',
+    op: opB2,
+    time: 4000
+  },
+  {
+    name: 'B<sub>3</sub>',
+    op: opB3,
+    time: 4000
+  },
+  {
+    name: 'B<sub>4</sub>',
+    op: opB4,
+    time: 4000
+  },
+  {
+    name: 'B<sub>5</sub>',
+    op: opB5,
+    time: 4000
+  },
+  {
+    name: 'C<sub>1</sub>',
+    op: opC1,
+    time: 16000
+  },
+  {
+    name: 'C<sub>2</sub>',
+    op: opC2,
+    time: 16000
+  },
+  {
+    name: 'C<sub>3</sub>',
+    op: opC3,
+    time: 16000
+  },
+  {
+    name: 'C<sub>4</sub>',
+    op: opC4,
+    time: 16000
+  },
+  {
+    name: 'C<sub>5</sub>',
+    op: opC5,
+    time: 16000
+  }
+];
+</script>
+
+R = &lang; <span id="rootList">
+  r<sub>1</sub>, r<sub>2</sub>, r<sub>3</sub>, r<sub>4</sub>
+</span> &rang;
+<span id="resultNote"></span>
+
+<br />
+
+X = &lang; <span id="resultList">
+  x<sub>1</sub>, x<sub>2</sub>
+</span> &rang;
+
+<br />
+
+<span id="rotationCounterList">
+  z<sub>0</sub> = 0+0i,
+  Rot(x<sub>1</sub>, z<sub>0</sub>) = 0,
+  Rot(x<sub>2</sub>, z<sub>0</sub>) = 0
+</span>
+
+<br />
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="resetRootAndResultList(display);">
+  Reset root and result list
+</button>
+
+<br />
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opA1, 1000);">
+  A<sub>1</sub> = ↺<sub>1, 2</sub>
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opA2, 1000);">
+  A<sub>2</sub> = ↺<sub>2, 3</sub>
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opA3, 1000);">
+  A<sub>3</sub> = ↺<sub>3, 4</sub>
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opA4, 1000);">
+  A<sub>4</sub> = ↺<sub>4, 5</sub>
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opA5, 1000);">
+  A<sub>5</sub> = ↺<sub>5, 1</sub>
+</button>
+
+<br />
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opA1Inv, 1000);">
+  A<sub>1</sub>&prime; = ↻<sub>1, 2</sub>
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opA2Inv, 1000);">
+  A<sub>2</sub>&prime; = ↻<sub>2, 3</sub>
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opA3Inv, 1000);">
+  A<sub>3</sub>&prime; = ↻<sub>3, 4</sub>
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opA4Inv, 1000);">
+  A<sub>4</sub>&prime; = ↻<sub>4, 1</sub>
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opA5Inv, 1000);">
+  A<sub>5</sub>&prime; = ↻<sub>5, 1</sub>
+</button>
+
+<br />
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opB1, 4000);">
+  B<sub>1</sub> = [A<sub>1</sub>, A<sub>2</sub>] &mapsto; (1 3 2)
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opB2, 4000);">
+  B<sub>2</sub> = [A<sub>2</sub>, A<sub>3</sub>] &mapsto; (2 4 3)
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opB3, 4000);">
+  B<sub>3</sub> = [A<sub>3</sub>, A<sub>4</sub>] &mapsto; (3 5 4)
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opB4, 4000);">
+  B<sub>4</sub> = [A<sub>4</sub>, A<sub>5</sub>] &mapsto; (4 1 5)
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opB5, 4000);">
+  B<sub>5</sub> = [A<sub>5</sub>, A<sub>1</sub>] &mapsto; (5 2 1)
+</button>
+
+<br />
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opB1Inv, 4000);">
+  B<sub>1</sub>&prime;
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opB2Inv, 4000);">
+  B<sub>2</sub>&prime;
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opB3Inv, 4000);">
+  B<sub>3</sub>&prime;
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opB4Inv, 4000);">
+  B<sub>4</sub>&prime;
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opB5Inv, 4000);">
+  B<sub>5</sub>&prime;
+</button>
+
+<br />
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opC1, 16000);">
+  C<sub>1</sub> = [B<sub>1</sub>, B<sub>3</sub>] &mapsto; (1 4 3)
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opC2, 16000);">
+  C<sub>2</sub> = [B<sub>2</sub>, B<sub>4</sub>] &mapsto; (2 5 4)
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opC3, 16000);">
+  C<sub>3</sub> = [B<sub>3</sub>, B<sub>5</sub>] &mapsto; (3 1 5)
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opC4, 16000);">
+  C<sub>4</sub> = [B<sub>4</sub>, B<sub>1</sub>] &mapsto; (4 2 1)
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opC5, 16000);">
+  C<sub>5</sub> = [B<sub>5</sub>, B<sub>2</sub>] &mapsto; (5 3 2)
+</button>
+
+<br />
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opC1Inv, 16000);">
+  C<sub>1</sub>&prime;
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opC2Inv, 16000);">
+  C<sub>2</sub>&prime;
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opC3Inv, 16000);">
+  C<sub>3</sub>&prime;
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opC4Inv, 16000);">
+  C<sub>4</sub>&prime;
+</button>
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="runOp(display, opC5Inv, 16000);">
+  C<sub>5</sub>&prime;
+</button>
+
+<br />
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="findFirstOpRulingOutSelectedFormula(display, opInfos);">
+  Find first op that rules out selected formula
+</button>
+
+<span id="findFirstOpStatus"></span>
+
+<br />
+
+Formula:
+<label>
+<input class="disableWhileRunningOp" name="formula" type="radio"
+       onchange="switchFormula(display, quinticDiscFormula);" />
+&Delta;
+</label>
+
+<label>
+<input checked class="disableWhileRunningOp" name="formula" type="radio"
+       onchange="switchFormula(display, quinticDiscFormula.root(2));" />
+&radic;&Delta;
+</label>
+
+<br />
+
+Trace:
+<label>
+  <input type="checkbox" onchange="setTrace(display, event);" value="r1" />
+  r<sub>1</sub>
+</label>
+
+<label>
+  <input type="checkbox" onchange="setTrace(display, event);" value="r2" />
+  r<sub>2</sub>
+</label>
+
+<label>
+  <input type="checkbox" onchange="setTrace(display, event);" value="r3" />
+  r<sub>3</sub>
+</label>
+
+<label>
+  <input type="checkbox" onchange="setTrace(display, event);" value="r4" />
+  r<sub>4</sub>
+</label>
+
+<label>
+  <input type="checkbox" onchange="setTrace(display, event);" value="a3" />
+  b
+</label>
+
+<label>
+  <input type="checkbox" onchange="setTrace(display, event);" value="a2" />
+  c
+</label>
+
+<label>
+  <input type="checkbox" onchange="setTrace(display, event);" value="a1" />
+  d
+</label>
+
+<label>
+  <input type="checkbox" onchange="setTrace(display, event);" value="a0" />
+  e
+</label>
+
+<label class="traceX">
+  <input type="checkbox" onchange="setTrace(display, event);" value="x1" />
+  x<sub>1</sub>
+</label>
+
+<label class="traceX">
+  <input type="checkbox" onchange="setTrace(display, event);" value="x2" />
+  x<sub>2</sub>
+</label>
+
+</html>
