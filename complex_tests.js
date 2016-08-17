@@ -1,6 +1,26 @@
 'use strict';
 
+var toBeCloseToComplexFactory = function(util, customEqualityTesters) {
+  return {
+    compare: function(actual, expected, precision) {
+      if (precision !== 0) {
+        precision = precision || 2;
+      }
+
+      return {
+        pass: expected.minus(actual).abs() < (Math.pow(10, -precision) / 2)
+      };
+    }
+  };
+};
+
 describe('complex', function() {
+  beforeEach(function() {
+    jasmine.addMatchers({
+      toBeCloseToComplex: toBeCloseToComplexFactory
+    });
+  });
+
   it('construction and accessors', function() {
     var re = 3.1;
     var im = 2.5;
@@ -100,7 +120,6 @@ describe('complex', function() {
 
     var q1 = z1.div(z2);
     var q2 = z1.times(z2.conj());
-    expect(q1.re()).toBeCloseTo(q2.re() / z2.absSq());
-    expect(q1.im()).toBeCloseTo(q2.im() / z2.absSq());
+    expect(q1).toBeCloseToComplex(q2.div(new Complex(z2.absSq(), 0)));
   });
 });
