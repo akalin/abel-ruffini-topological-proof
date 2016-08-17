@@ -30,6 +30,14 @@ describe('complex', function() {
     expect(z.im()).toBe(im);
   });
 
+  it('from', function() {
+    var re = 3.1;
+    var z1 = Complex.from(re);
+    expect(z1).toEqual(new Complex(re, 0));
+    var z2 = Complex.from(z1);
+    expect(z2).toEqual(z1);
+  });
+
   it('fromPolar', function() {
     var r = 2;
     var th = Math.PI / 3;
@@ -61,6 +69,15 @@ describe('complex', function() {
     expect(z3.equals(z1)).toBe(false);
     expect(z3.equals(z2)).toBe(false);
     expect(z3.equals(z3)).toBe(true);
+  });
+
+  it('equals number', function() {
+    var z1 = new Complex(3.1, 2.5);
+    var z2 = new Complex(3.1, 0);
+    var r = 3.1;
+
+    expect(z1.equals(r)).toBe(false);
+    expect(z2.equals(r)).toBe(true);
   });
 
   it('abs and absSq', function() {
@@ -106,6 +123,16 @@ describe('complex', function() {
     expect(z1.minus(z2)).toEqual(new Complex(re1-re2, im1-im2));
   });
 
+  it('plus and minus number', function() {
+    var re1 = 2.5;
+    var im1 = 3.1;
+    var re2 = 4.6;
+    var z1 = new Complex(re1, im1);
+
+    expect(z1.plus(re2)).toEqual(new Complex(re1+re2, im1));
+    expect(z1.minus(re2)).toEqual(new Complex(re1-re2, im1));
+  });
+
   it('times', function() {
     var re1 = 2.5;
     var im1 = 3.1;
@@ -116,6 +143,15 @@ describe('complex', function() {
 
     expect(z1.times(z2)).toEqual(new Complex(re1*re2-im1*im2, re1*im2+re2*im1));
     expect(z1.times(z1.conj())).toEqual(new Complex(re1*re1+im1*im1, 0));
+  });
+
+  it('times number', function() {
+    var re1 = 2.5;
+    var im1 = 3.1;
+    var re2 = -4.6;
+    var z1 = new Complex(re1, im1);
+
+    expect(z1.times(re2)).toEqual(new Complex(re1*re2, im1*re2));
   });
 
   it('div', function() {
@@ -129,6 +165,15 @@ describe('complex', function() {
     var q1 = z1.div(z2);
     var q2 = z1.times(z2.conj());
     expect(q1).toBeCloseToComplex(q2.div(new Complex(z2.absSq(), 0)));
+  });
+
+  it('div number', function() {
+    var re1 = 2.5;
+    var im1 = 3.1;
+    var re2 = -4.6;
+    var z1 = new Complex(re1, im1);
+
+    expect(z1.div(re2)).toEqual(new Complex(re1 / re2, im1 / re2));
   });
 
   it('root', function() {

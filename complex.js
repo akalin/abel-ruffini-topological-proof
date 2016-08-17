@@ -9,6 +9,13 @@ Complex.ZERO = new Complex(0, 0);
 Complex.ONE = new Complex(1, 0);
 Complex.I = new Complex(0, 1);
 
+Complex.from = function(o) {
+  if (o instanceof Complex) {
+    return o;
+  }
+  return new Complex(o, 0);
+};
+
 Complex.fromPolar = function(r, th) {
   return new Complex(r * Math.cos(th), r * Math.sin(th));
 };
@@ -28,6 +35,7 @@ Complex.prototype.im = function() {
 };
 
 Complex.prototype.equals = function(other) {
+  other = Complex.from(other);
   return (this._re == other._re) && (this._im == other._im);
 };
 
@@ -53,19 +61,23 @@ Complex.prototype.conj = function() {
 };
 
 Complex.prototype.plus = function(other) {
+  other = Complex.from(other);
   return new Complex(this._re + other._re, this._im + other._im);
 };
 
 Complex.prototype.minus = function(other) {
+  other = Complex.from(other);
   return new Complex(this._re - other._re, this._im - other._im);
 };
 
 Complex.prototype.times = function(other) {
+  other = Complex.from(other);
   return new Complex(this._re * other._re - this._im * other._im,
                      this._re * other._im + this._im * other._re);
 };
 
 Complex.prototype.div = function(other) {
+  other = Complex.from(other);
   var d = other.absSq();
   return new Complex((this._re * other._re + this._im * other._im) / d,
                      (this._im * other._re - this._re * other._im) / d);
