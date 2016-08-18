@@ -144,6 +144,19 @@ describe('complex', function() {
     expect(z1.minus(re2)).toEqual(new Complex(re1-re2, im1));
   });
 
+  it('plus and minus multiple arguments', function() {
+    var re1 = 2.5;
+    var im1 = 3.1;
+    var re2 = 4.6;
+    var z1 = new Complex(re1, im1);
+
+    expect(z1.plus()).toEqual(z1);
+    expect(z1.minus()).toEqual(z1);
+
+    expect(z1.plus(z1, re2)).toEqual(z1.plus(z1).plus(re2));
+    expect(z1.minus(z1, re2)).toEqual(z1.minus(z1).minus(re2));
+  });
+
   it('times', function() {
     var re1 = 2.5;
     var im1 = 3.1;

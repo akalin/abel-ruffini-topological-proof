@@ -65,14 +65,26 @@ Complex.prototype.conj = function() {
   return new Complex(this._re, -this._im);
 };
 
-Complex.prototype.plus = function(other) {
-  other = Complex.from(other);
-  return new Complex(this._re + other._re, this._im + other._im);
+Complex.prototype.plus = function() {
+  var re = this._re;
+  var im = this._im;
+  for (var i = 0; i < arguments.length; ++i) {
+    var other = Complex.from(arguments[i]);
+    re += other._re;
+    im += other._im;
+  }
+  return new Complex(re, im);
 };
 
-Complex.prototype.minus = function(other) {
-  other = Complex.from(other);
-  return new Complex(this._re - other._re, this._im - other._im);
+Complex.prototype.minus = function() {
+  var re = this._re;
+  var im = this._im;
+  for (var i = 0; i < arguments.length; ++i) {
+    var other = Complex.from(arguments[i]);
+    re -= other._re;
+    im -= other._im;
+  }
+  return new Complex(re, im);
 };
 
 Complex.prototype.times = function(other) {
