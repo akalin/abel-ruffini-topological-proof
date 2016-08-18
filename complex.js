@@ -149,6 +149,13 @@ Complex.div = Complex.prototype.div = function() {
   return new Complex(re, im);
 };
 
+// Assumes p is a non-negative integer.
+Complex.prototype.pow = function(p) {
+  var r = Math.pow(this.absSq(), 0.5*p);
+  var th = this.arg() * p;
+  return Complex.fromPolar(r, th);
+};
+
 // Returns the kth pth root. That is, if the polar form of this is (r,
 // th=this.arg()), this returns (root(r, p), (th + 2*pi*k)/p) in polar
 // form.

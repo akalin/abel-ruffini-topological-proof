@@ -235,6 +235,17 @@ describe('complex', function() {
     expect(z1.div(z2, z1)).toEqual(z1.div(z2).div(z1));
   });
 
+  it('pow', function() {
+    var re1 = 2.5;
+    var im1 = 3.1;
+    var z1 = new Complex(re1, im1);
+
+    expect(z1.pow(0)).toEqual(Complex.ONE);
+    expect(z1.pow(1)).toEqual(z1);
+    expect(z1.pow(2)).toBeCloseToComplex(z1.times(z1));
+    expect(z1.pow(5)).toBeCloseToComplex(z1.times(z1, z1, z1, z1));
+  });
+
   it('root', function() {
     var re = 0.5;
     var im = Math.sqrt(3)*0.5;
