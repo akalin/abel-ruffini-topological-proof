@@ -80,6 +80,17 @@ describe('complex', function() {
     expect(z2.equals(r)).toBe(true);
   });
 
+  it('equals multiple arguments', function() {
+    var z1 = new Complex(3.1, 2.5);
+    var z2 = new Complex(3.1, 0);
+    var r = 3.1;
+
+    expect(z1.equals()).toBe(true);
+    expect(z1.equals(z1, z1)).toBe(true);
+    expect(z2.equals(r, z1)).toBe(false);
+    expect(z2.equals(z1, r)).toBe(false);
+  });
+
   it('abs and absSq', function() {
     var z = new Complex(3, 4);
 

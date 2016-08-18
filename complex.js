@@ -34,9 +34,14 @@ Complex.prototype.im = function() {
   return this._im;
 };
 
-Complex.prototype.equals = function(other) {
-  other = Complex.from(other);
-  return (this._re == other._re) && (this._im == other._im);
+Complex.prototype.equals = function() {
+  for (var i = 0; i < arguments.length; ++i) {
+    var other = Complex.from(arguments[i]);
+    if ((this._re != other._re) || (this._im != other._im)) {
+      return false;
+    }
+  }
+  return true;
 };
 
 Complex.prototype.absSq = function() {
