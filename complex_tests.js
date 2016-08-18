@@ -178,6 +178,18 @@ describe('complex', function() {
     expect(z1.times(re2)).toEqual(new Complex(re1*re2, im1*re2));
   });
 
+  it('times multiple arguments', function() {
+    var re1 = 2.5;
+    var im1 = 3.1;
+    var re2 = -4.6;
+    var im2 = 6.1;
+    var z1 = new Complex(re1, im1);
+    var z2 = new Complex(re2, im2);
+
+    expect(z1.times()).toEqual(z1);
+    expect(z1.times(z2, z1)).toEqual(z1.times(z2).times(z1));
+  });
+
   it('div', function() {
     var re1 = 2.5;
     var im1 = 3.1;
@@ -198,6 +210,18 @@ describe('complex', function() {
     var z1 = new Complex(re1, im1);
 
     expect(z1.div(re2)).toEqual(new Complex(re1 / re2, im1 / re2));
+  });
+
+  it('div multiple arguments', function() {
+    var re1 = 2.5;
+    var im1 = 3.1;
+    var re2 = -4.6;
+    var im2 = 6.1;
+    var z1 = new Complex(re1, im1);
+    var z2 = new Complex(re2, im2);
+
+    expect(z1.div()).toEqual(z1);
+    expect(z1.div(z2, z1)).toEqual(z1.div(z2).div(z1));
   });
 
   it('root', function() {

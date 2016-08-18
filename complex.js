@@ -87,17 +87,31 @@ Complex.prototype.minus = function() {
   return new Complex(re, im);
 };
 
-Complex.prototype.times = function(other) {
-  other = Complex.from(other);
-  return new Complex(this._re * other._re - this._im * other._im,
-                     this._re * other._im + this._im * other._re);
+Complex.prototype.times = function() {
+  var re = this._re;
+  var im = this._im;
+  for (var i = 0; i < arguments.length; ++i) {
+    var other = Complex.from(arguments[i]);
+    var prevRe = re;
+    var prevIm = im;
+    re = prevRe * other._re - prevIm * other._im
+    im = prevRe * other._im + prevIm * other._re;
+  }
+  return new Complex(re, im);
 };
 
-Complex.prototype.div = function(other) {
-  other = Complex.from(other);
-  var d = other.absSq();
-  return new Complex((this._re * other._re + this._im * other._im) / d,
-                     (this._im * other._re - this._re * other._im) / d);
+Complex.prototype.div = function() {
+  var re = this._re;
+  var im = this._im;
+  for (var i = 0; i < arguments.length; ++i) {
+    var other = Complex.from(arguments[i]);
+    var d = other.absSq();
+    var prevRe = re;
+    var prevIm = im;
+    re = (prevRe * other._re + prevIm * other._im) / d;
+    im = (prevIm * other._re - prevRe * other._im) / d;
+  }
+  return new Complex(re, im);
 };
 
 // Returns the kth pth root. That is, if the polar form of this is (r,
