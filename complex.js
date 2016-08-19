@@ -34,10 +34,19 @@ Complex.prototype.im = function() {
   return this._im;
 };
 
-Complex.prototype.equals = function() {
-  for (var i = 0; i < arguments.length; ++i) {
+Complex.equals = Complex.prototype.equals = function() {
+  var first = this;
+  var i = 0;
+  if (!(first instanceof Complex)) {
+    if (arguments.length === 0) {
+      return true;
+    }
+    first = arguments[0];
+    i = 1;
+  }
+  for (; i < arguments.length; ++i) {
     var other = Complex.from(arguments[i]);
-    if ((this._re != other._re) || (this._im != other._im)) {
+    if ((first._re != other._re) || (first._im != other._im)) {
       return false;
     }
   }
@@ -65,9 +74,13 @@ Complex.prototype.conj = function() {
   return new Complex(this._re, -this._im);
 };
 
-Complex.prototype.plus = function() {
-  var re = this._re;
-  var im = this._im;
+Complex.plus = Complex.prototype.plus = function() {
+  var re = 0;
+  var im = 0;
+  if (this instanceof Complex) {
+    re = this._re;
+    im = this._im;
+  }
   for (var i = 0; i < arguments.length; ++i) {
     var other = Complex.from(arguments[i]);
     re += other._re;
@@ -76,10 +89,19 @@ Complex.prototype.plus = function() {
   return new Complex(re, im);
 };
 
-Complex.prototype.minus = function() {
-  var re = this._re;
-  var im = this._im;
-  for (var i = 0; i < arguments.length; ++i) {
+Complex.minus = Complex.prototype.minus = function() {
+  var first = this;
+  var i = 0;
+  if (!(first instanceof Complex)) {
+    if (arguments.length === 0) {
+      return Complex.ZERO;
+    }
+    first = Complex.from(arguments[0]);
+    i = 1;
+  }
+  var re = first._re;
+  var im = first._im;
+  for (; i < arguments.length; ++i) {
     var other = Complex.from(arguments[i]);
     re -= other._re;
     im -= other._im;
@@ -87,9 +109,13 @@ Complex.prototype.minus = function() {
   return new Complex(re, im);
 };
 
-Complex.prototype.times = function() {
-  var re = this._re;
-  var im = this._im;
+Complex.times = Complex.prototype.times = function() {
+  var re = 1;
+  var im = 0;
+  if (this instanceof Complex) {
+    re = this._re;
+    im = this._im;
+  }
   for (var i = 0; i < arguments.length; ++i) {
     var other = Complex.from(arguments[i]);
     var prevRe = re;
@@ -100,10 +126,19 @@ Complex.prototype.times = function() {
   return new Complex(re, im);
 };
 
-Complex.prototype.div = function() {
-  var re = this._re;
-  var im = this._im;
-  for (var i = 0; i < arguments.length; ++i) {
+Complex.div = Complex.prototype.div = function() {
+  var first = this;
+  var i = 0;
+  if (!(first instanceof Complex)) {
+    if (arguments.length === 0) {
+      return Complex.ONE;
+    }
+    first = Complex.from(arguments[0]);
+    i = 1;
+  }
+  var re = first._re;
+  var im = first._im;
+  for (; i < arguments.length; ++i) {
     var other = Complex.from(arguments[i]);
     var d = other.absSq();
     var prevRe = re;

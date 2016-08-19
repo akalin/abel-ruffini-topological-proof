@@ -85,6 +85,8 @@ describe('complex', function() {
     var z2 = new Complex(3.1, 0);
     var r = 3.1;
 
+    var f = Complex.equals;
+    expect(f()).toBe(true);
     expect(z1.equals()).toBe(true);
     expect(z1.equals(z1, z1)).toBe(true);
     expect(z2.equals(r, z1)).toBe(false);
@@ -150,6 +152,11 @@ describe('complex', function() {
     var re2 = 4.6;
     var z1 = new Complex(re1, im1);
 
+    var f = Complex.plus;
+    expect(f()).toEqual(Complex.ZERO);
+    f = Complex.minus;
+    expect(f()).toEqual(Complex.ZERO);
+
     expect(z1.plus()).toEqual(z1);
     expect(z1.minus()).toEqual(z1);
 
@@ -186,6 +193,8 @@ describe('complex', function() {
     var z1 = new Complex(re1, im1);
     var z2 = new Complex(re2, im2);
 
+    var f = Complex.times;
+    expect(f()).toEqual(Complex.ONE);
     expect(z1.times()).toEqual(z1);
     expect(z1.times(z2, z1)).toEqual(z1.times(z2).times(z1));
   });
@@ -220,6 +229,8 @@ describe('complex', function() {
     var z1 = new Complex(re1, im1);
     var z2 = new Complex(re2, im2);
 
+    var f = Complex.div;
+    expect(f()).toEqual(Complex.ONE);
     expect(z1.div()).toEqual(z1);
     expect(z1.div(z2, z1)).toEqual(z1.div(z2).div(z1));
   });
