@@ -30,4 +30,31 @@ describe('complex formula', function() {
       Complex.from(12)
     ]);
   });
+
+  it('empty', function() {
+    var f = ComplexFormula.empty;
+    var results = f.update(1, 3, 5);
+    expect(results).toEqual([]);
+    var results = f.update();
+    expect(results).toEqual([]);
+  });
+
+  it('constant', function() {
+    var f = ComplexFormula.constant(5);
+    var results = f.update(1, 3, 5);
+    expect(results).toEqual([ Complex.from(5) ]);
+    var results = f.update();
+    expect(results).toEqual([ Complex.from(5) ]);
+  });
+
+  it('select', function() {
+    for (var i = -2; i <= +2; ++i) {
+      var f = ComplexFormula.select(i);
+
+      var zs = [1, 3, 5];
+      var results = f.update.apply(f, zs);
+      var j = (i >= 0) ? i : (zs.length + i);
+      expect(results).toEqual([ Complex.from(zs[j]) ]);
+    }
+  });
 });

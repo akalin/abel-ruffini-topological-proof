@@ -29,3 +29,23 @@ ComplexFormula.prototype.update = function() {
   });
   return this._f(subresults);
 };
+
+ComplexFormula.empty = new ComplexFormula(function() {
+  return [];
+});
+
+ComplexFormula.constant = function(o) {
+  var z = Complex.from(o);
+  return new ComplexFormula(function() {
+    return [ z ];
+  });
+};
+
+ComplexFormula.select = function(i) {
+  return new ComplexFormula(function(subresults) {
+    if (i < 0) {
+      i = subresults[0].length + i;
+    }
+    return [ subresults[0][i] ];
+  });
+};
