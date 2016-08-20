@@ -138,3 +138,7 @@ ComplexFormula.minus = ComplexFormula.prototype.minus = function() {
 ComplexFormula.times = ComplexFormula.prototype.times = function() {
   return ComplexFormula._multiOp(Complex.times, this, arguments);
 };
+
+ComplexFormula.div = ComplexFormula.prototype.div = function() {
+  return ComplexFormula._multiOp(Complex.div, this, arguments);
+};

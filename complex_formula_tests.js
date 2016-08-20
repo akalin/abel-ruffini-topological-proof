@@ -271,4 +271,46 @@ describe('complex formula', function() {
     var results = f.update(2, 3);
     expect(results).toEqual([ Complex.from(12) ]);
   });
+
+  it('div', function() {
+    var a = ComplexFormula.select(0);
+    var b = ComplexFormula.select(1);
+    var f = a.div(b);
+
+    var results = f.update(1, 3);
+    expect(results).toEqual([ Complex.from(1/3) ]);
+  });
+
+  it('div empty', function() {
+    var a = ComplexFormula.empty;
+    var f = a.div(a);
+
+    var results = f.update(4, 9);
+    expect(results).toEqual([]);
+  });
+
+  it('div multivalent', function() {
+    var a = ComplexFormula.select(0).root(2);
+    var b = ComplexFormula.select(1).root(2);
+    var f = a.div(b);
+
+    var results = f.update(4, 9);
+    expect(results).toBeCloseToComplexArray([
+      Complex.from(2/3), Complex.from(2/3)
+    ]);
+  });
+
+  it('div multiple arguments', function() {
+    var f = ComplexFormula.div;
+
+    var results = f().update(1, 3);
+    expect(results).toEqual([]);
+
+    var a = ComplexFormula.select(0);
+    var b = ComplexFormula.select(1);
+    f = a.div(b, a);
+
+    var results = f.update(2, 3);
+    expect(results).toEqual([ Complex.from(1/3) ]);
+  });
 });
