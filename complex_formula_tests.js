@@ -229,4 +229,46 @@ describe('complex formula', function() {
     var results = f.update(1, 3);
     expect(results).toEqual([ Complex.from(-3) ]);
   });
+
+  it('times', function() {
+    var a = ComplexFormula.select(0);
+    var b = ComplexFormula.select(1);
+    var f = a.times(b);
+
+    var results = f.update(1, 3);
+    expect(results).toEqual([ Complex.from(3) ]);
+  });
+
+  it('times empty', function() {
+    var a = ComplexFormula.empty;
+    var f = a.times(a);
+
+    var results = f.update(4, 9);
+    expect(results).toEqual([]);
+  });
+
+  it('times multivalent', function() {
+    var a = ComplexFormula.select(0).root(2);
+    var b = ComplexFormula.select(1).root(2);
+    var f = a.times(b);
+
+    var results = f.update(4, 9);
+    expect(results).toBeCloseToComplexArray([
+      Complex.from(6), Complex.from(6)
+    ]);
+  });
+
+  it('times multiple arguments', function() {
+    var f = ComplexFormula.times;
+
+    var results = f().update(1, 3);
+    expect(results).toEqual([]);
+
+    var a = ComplexFormula.select(0);
+    var b = ComplexFormula.select(1);
+    f = a.times(b, a);
+
+    var results = f.update(2, 3);
+    expect(results).toEqual([ Complex.from(12) ]);
+  });
 });
