@@ -128,4 +128,63 @@ describe('complex formula', function() {
     var results = f.update(1, 3);
     expect(results).toEqual([]);
   });
+
+  it('from', function() {
+    var re = 3.1;
+
+    var f = ComplexFormula.from(re);
+    var results = f.update(1.4);
+    expect(results).toEqual([ Complex.from(3.1) ]);
+
+    var z = new Complex(1.4, 2.5);
+    f = ComplexFormula.from(z);
+    results = f.update(1.4, 3.1);
+    expect(results).toEqual([ z ]);
+
+    f = ComplexFormula.from(f);
+    results = f.update(1.4, 3.1);
+    expect(results).toEqual([ z ]);
+  });
+
+  it('plus', function() {
+    var a = ComplexFormula.select(0);
+    var b = ComplexFormula.select(1);
+    var f = a.plus(b);
+
+    var results = f.update(1, 3);
+    expect(results).toEqual([ Complex.from(4) ]);
+  });
+
+  it('plus empty', function() {
+    var a = ComplexFormula.empty;
+    var f = a.plus(a);
+
+    var results = f.update(4, 9);
+    expect(results).toEqual([]);
+  });
+
+  it('plus multivalent', function() {
+    var a = ComplexFormula.select(0).root(2);
+    var b = ComplexFormula.select(1).root(2);
+    var f = a.plus(b);
+
+    var results = f.update(4, 9);
+    expect(results).toBeCloseToComplexArray([
+      Complex.from(5), Complex.from(-5)
+    ]);
+  });
+
+  it('plus multiple arguments', function() {
+    var f = ComplexFormula.plus;
+
+    var results = f().update(1, 3);
+    expect(results).toEqual([]);
+
+    var a = ComplexFormula.select(0);
+    var b = ComplexFormula.select(1);
+    f = a.plus(b, a, b);
+
+    var results = f.update(1, 3);
+    expect(results).toEqual([ Complex.from(8) ]);
+  });
 });

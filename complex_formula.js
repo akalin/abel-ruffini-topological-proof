@@ -101,3 +101,32 @@ ComplexFormula.prototype.root = function(p) {
     return results;
   }, [ this ]);
 };
+
+ComplexFormula.from = function(o) {
+  if (o instanceof ComplexFormula) {
+    return o;
+  }
+  return ComplexFormula.constant(o);
+};
+
+ComplexFormula._multiOp = function(op, that, args) {
+  var subformulas = Array.prototype.map.call(args, function(arg) {
+    return ComplexFormula.from(arg);
+  });
+  if (that instanceof ComplexFormula) {
+    subformulas.unshift(that);
+  }
+  if (subformulas.length == 0) {
+    return ComplexFormula.empty;
+  }
+  return new ComplexFormula(function(subresults) {
+    return subresults[0].map(function(_, i) {
+      var opInputs = subresults.map(function(a) { return a[i]; });
+      return op.apply(null, opInputs);
+    });
+  }, subformulas);
+};
+
+ComplexFormula.plus = ComplexFormula.prototype.plus = function() {
+  return ComplexFormula._multiOp(Complex.plus, this, arguments);
+};
