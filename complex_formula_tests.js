@@ -1,4 +1,11 @@
 describe('complex formula', function() {
+  beforeEach(function() {
+    jasmine.addMatchers({
+      toBeCloseToComplex: toBeCloseToComplexFactory,
+      toBeCloseToComplexArray: toBeCloseToComplexArrayFactory
+    });
+  });
+
   it('construction with no subformulas', function() {
     var f = new ComplexFormula(function(subresults) {
       return subresults[0].map(function(z) { return z.pow(2); });
@@ -93,6 +100,32 @@ describe('complex formula', function() {
     var f = ComplexFormula.empty.pow(3);
     var z = new Complex(1, 2);
     var results = f.update(1, z, 5);
+    expect(results).toEqual([]);
+  });
+
+  it('root', function() {
+    var f = ComplexFormula.select(0).root(2);
+
+    var results = f.update(Complex.ONE);
+    expect(results).toBeCloseToComplexArray([ Complex.ONE, Complex.ONE.neg() ]);
+
+    results = f.update(Complex.ONE.neg());
+    expect(results).toBeCloseToComplexArray([ Complex.I, Complex.I.neg() ]);
+
+    results = f.update(Complex.ONE);
+    expect(results).toBeCloseToComplexArray([ Complex.ONE.neg(), Complex.ONE ]);
+
+    results = f.update(Complex.ONE.neg());
+    expect(results).toBeCloseToComplexArray([ Complex.I.neg(), Complex.I ]);
+
+    results = f.update(Complex.ONE);
+    expect(results).toBeCloseToComplexArray([ Complex.ONE, Complex.ONE.neg() ]);
+  });
+
+  it('root empty', function() {
+    var f = ComplexFormula.empty.root(2);
+
+    var results = f.update(1, 3);
     expect(results).toEqual([]);
   });
 });

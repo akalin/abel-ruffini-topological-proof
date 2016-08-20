@@ -14,6 +14,29 @@ var toBeCloseToComplexFactory = function(util, customEqualityTesters) {
   };
 };
 
+var toBeCloseToComplexArrayFactory = function(util, customEqualityTesters) {
+  return {
+    compare: function(actual, expected, precision) {
+      if (actual.length !== expected.length) {
+        return { pass: false };
+      }
+
+      if (precision !== 0) {
+        precision = precision || 2;
+      }
+
+      var epsilon = Math.pow(10, -precision) / 2;
+      for (var i = 0; i < actual.length; ++i) {
+        if (expected[i].minus(actual[i]).abs() >= epsilon) {
+          return { pass: false };
+        }
+      }
+
+      return { pass: true };
+    }
+  };
+};
+
 describe('complex', function() {
   beforeEach(function() {
     jasmine.addMatchers({

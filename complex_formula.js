@@ -73,3 +73,31 @@ ComplexFormula.prototype.pow = function(p) {
     return z.pow(p);
   });
 };
+
+// The returned formula returns an array of all p pth roots of all its
+// arguments. Furthermore, as the formula is updated with new
+// arguments that go around the origin, the returned roots remain in a
+// stable order and vary continuously with respect to the input,
+// assuming that the arguments don't go through zero.
+ComplexFormula.prototype.root = function(p) {
+  var rotationCounters;
+  return new ComplexFormula(function(subresults) {
+    var zs = subresults[0];
+    if (rotationCounters === undefined) {
+      rotationCounters = zs.map(function() {
+        return new RotationCounter();
+      });
+    }
+    var results = [];
+    for (var i = 0; i < zs.length; ++i) {
+      var rotationCounter = rotationCounters[i];
+      var z = zs[i];
+      rotationCounter.update(z);
+      var k = rotationCounter.k();
+      for (var j = 0; j < p; ++j) {
+        results.push(z.root(p, (k + j) % p));
+      }
+    }
+    return results;
+  }, [ this ]);
+};
