@@ -180,3 +180,7 @@ ComplexFormula._multiOpAll = function(op, that, args) {
 ComplexFormula.plusAll = ComplexFormula.prototype.plusAll = function() {
   return ComplexFormula._multiOpAll(Complex.plus, this, arguments);
 };
+
+ComplexFormula.minusAll = ComplexFormula.prototype.minusAll = function() {
+  return ComplexFormula._multiOpAll(Complex.minus, this, arguments);
+};
