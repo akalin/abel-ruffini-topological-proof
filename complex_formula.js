@@ -198,3 +198,13 @@ ComplexFormula.prototype.slice = function(begin, end) {
     return subresults[0].slice(begin, end);
   }, [ this ]);
 };
+
+ComplexFormula.concat = ComplexFormula.prototype.concat = function() {
+  var subformulas = ComplexFormula._getSubformulas(this, arguments);
+  if (subformulas.length == 0) {
+    return ComplexFormula.empty;
+  }
+  return new ComplexFormula(function(subresults) {
+    return Array.prototype.concat.apply([], subresults);
+  }, subformulas);
+};

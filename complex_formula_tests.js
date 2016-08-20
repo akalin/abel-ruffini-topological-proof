@@ -515,4 +515,30 @@ describe('complex formula', function() {
     var results = f.update(16);
     expect(results).toBeCloseToComplexArray([ Complex.from(-2) ]);
   });
+
+  it('concat', function() {
+    var a = ComplexFormula.select(0);
+    var b = ComplexFormula.select(1);
+    var f = a.concat(b, a, b);
+
+    var results = f.update(2, 3);
+    expect(results).toEqual([
+      Complex.from(2),
+      Complex.from(3),
+      Complex.from(2),
+      Complex.from(3)
+    ]);
+  });
+
+  it('concat empty', function() {
+    var f = ComplexFormula.concat;
+    var results = f().update(2, 3);
+    expect(results).toEqual([]);
+  });
+
+  it('concat single', function() {
+    var f = ComplexFormula.select(1).concat();
+    var results = f.update(2, 3);
+    expect(results).toEqual([ Complex.from(3) ]);
+  });
 });
