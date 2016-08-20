@@ -184,3 +184,7 @@ ComplexFormula.plusAll = ComplexFormula.prototype.plusAll = function() {
 ComplexFormula.minusAll = ComplexFormula.prototype.minusAll = function() {
   return ComplexFormula._multiOpAll(Complex.minus, this, arguments);
 };
+
+ComplexFormula.timesAll = ComplexFormula.prototype.timesAll = function() {
+  return ComplexFormula._multiOpAll(Complex.times, this, arguments);
+};

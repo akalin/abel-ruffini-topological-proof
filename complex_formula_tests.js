@@ -411,4 +411,53 @@ describe('complex formula', function() {
     var results = f.update(1, 3);
     expect(results).toEqual([ Complex.from(-3) ]);
   });
+
+  it('timesAll', function() {
+    var a = ComplexFormula.select(0).root(2);
+    var b = ComplexFormula.select(1).root(4);
+    var f = a.timesAll(b);
+
+    var results = f.update(1, 16);
+    expect(results).toBeCloseToComplexArray([
+      new Complex(2, 0),
+      new Complex(-2, 0),
+      new Complex(0, 2),
+      new Complex(0, -2),
+      new Complex(-2, 0),
+      new Complex(2, 0),
+      new Complex(0, -2),
+      new Complex(0, 2)
+    ]);
+  });
+
+  it('timesAll empty', function() {
+    var a = ComplexFormula.empty;
+    var f = a.timesAll(a);
+
+    var results = f.update(4, 9);
+    expect(results).toEqual([]);
+  });
+
+  it('timesAll univalent', function() {
+    var a = ComplexFormula.select(0);
+    var b = ComplexFormula.select(1);
+    var f = a.timesAll(b);
+
+    var results = f.update(2, 3);
+    expect(results).toBeCloseToComplexArray([ Complex.from(6) ]);
+  });
+
+  it('timesAll multiple arguments', function() {
+    var f = ComplexFormula.timesAll;
+
+    var results = f().update(1, 3);
+    expect(results).toEqual([]);
+
+    var a = ComplexFormula.select(0);
+    var b = ComplexFormula.select(1);
+    f = a.timesAll(b, a);
+
+    var results = f.update(1, 3);
+    expect(results).toEqual([ Complex.from(3) ]);
+  });
 });
