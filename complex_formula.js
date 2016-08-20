@@ -49,3 +49,27 @@ ComplexFormula.select = function(i) {
     return [ subresults[0][i] ];
   });
 };
+
+ComplexFormula.prototype._unaryOp = function(op) {
+  return new ComplexFormula(function(subresults) {
+    return subresults[0].map(function(x) { return op(x); });
+  }, [ this ]);
+};
+
+ComplexFormula.prototype.neg = function() {
+  return this._unaryOp(function(z) {
+    return z.neg();
+  });
+};
+
+ComplexFormula.prototype.conj = function() {
+  return this._unaryOp(function(z) {
+    return z.conj();
+  });
+};
+
+ComplexFormula.prototype.pow = function(p) {
+  return this._unaryOp(function(z) {
+    return z.pow(p);
+  });
+};

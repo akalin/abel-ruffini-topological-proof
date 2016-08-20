@@ -57,4 +57,42 @@ describe('complex formula', function() {
       expect(results).toEqual([ Complex.from(zs[j]) ]);
     }
   });
+
+  it('neg', function() {
+    var f = ComplexFormula.select(1).neg();
+    var results = f.update(1, 3, 5);
+    expect(results).toEqual([ Complex.from(3).neg() ]);
+  });
+
+  it('neg empty', function() {
+    var f = ComplexFormula.empty.neg();
+    var results = f.update(1, 3, 5);
+    expect(results).toEqual([]);
+  });
+
+  it('conj', function() {
+    var f = ComplexFormula.select(1).conj();
+    var results = f.update(1, new Complex(1, 2), 5);
+    expect(results).toEqual([ new Complex(1, -2) ]);
+  });
+
+  it('conj empty', function() {
+    var f = ComplexFormula.empty.conj();
+    var results = f.update(1, 3, 5);
+    expect(results).toEqual([]);
+  });
+
+  it('pow', function() {
+    var f = ComplexFormula.select(1).pow(3);
+    var z = new Complex(1, 2);
+    var results = f.update(1, z, 5);
+    expect(results).toEqual([ z.pow(3) ]);
+  });
+
+  it('pow empty', function() {
+    var f = ComplexFormula.empty.pow(3);
+    var z = new Complex(1, 2);
+    var results = f.update(1, z, 5);
+    expect(results).toEqual([]);
+  });
 });
