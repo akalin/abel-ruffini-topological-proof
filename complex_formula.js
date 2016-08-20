@@ -130,3 +130,7 @@ ComplexFormula._multiOp = function(op, that, args) {
 ComplexFormula.plus = ComplexFormula.prototype.plus = function() {
   return ComplexFormula._multiOp(Complex.plus, this, arguments);
 };
+
+ComplexFormula.minus = ComplexFormula.prototype.minus = function() {
+  return ComplexFormula._multiOp(Complex.minus, this, arguments);
+};
