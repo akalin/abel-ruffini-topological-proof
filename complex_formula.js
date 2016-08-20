@@ -192,3 +192,9 @@ ComplexFormula.timesAll = ComplexFormula.prototype.timesAll = function() {
 ComplexFormula.divAll = ComplexFormula.prototype.divAll = function() {
   return ComplexFormula._multiOpAll(Complex.div, this, arguments);
 };
+
+ComplexFormula.prototype.slice = function(begin, end) {
+  return new ComplexFormula(function(subresults) {
+    return subresults[0].slice(begin, end);
+  }, [ this ]);
+};

@@ -509,4 +509,10 @@ describe('complex formula', function() {
     var results = f.update(1, 3);
     expect(results).toEqual([ Complex.from(1/3) ]);
   });
+
+  it('slice', function() {
+    var f = ComplexFormula.select(0).root(4).slice(2, 3);
+    var results = f.update(16);
+    expect(results).toBeCloseToComplexArray([ Complex.from(-2) ]);
+  });
 });
