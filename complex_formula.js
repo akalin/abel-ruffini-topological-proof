@@ -109,13 +109,18 @@ ComplexFormula.from = function(o) {
   return ComplexFormula.constant(o);
 };
 
-ComplexFormula._multiOp = function(op, that, args) {
+ComplexFormula._getSubformulas = function(that, args) {
   var subformulas = Array.prototype.map.call(args, function(arg) {
     return ComplexFormula.from(arg);
   });
   if (that instanceof ComplexFormula) {
     subformulas.unshift(that);
   }
+  return subformulas;
+};
+
+ComplexFormula._multiOp = function(op, that, args) {
+  var subformulas = this._getSubformulas(that, args);
   if (subformulas.length == 0) {
     return ComplexFormula.empty;
   }
@@ -141,4 +146,37 @@ ComplexFormula.times = ComplexFormula.prototype.times = function() {
 
 ComplexFormula.div = ComplexFormula.prototype.div = function() {
   return ComplexFormula._multiOp(Complex.div, this, arguments);
+};
+
+ComplexFormula._multiOpAll = function(op, that, args) {
+  var subformulas = this._getSubformulas(that, args);
+  if (subformulas.length == 0) {
+    return ComplexFormula.empty;
+  }
+  return new ComplexFormula(function(subresults) {
+    var indices = subresults.map(function() { return 0; });
+    var results = [];
+    outer:
+    while (true) {
+      for (var i = 0; i < indices.length; ++i) {
+        if (indices[i] < subresults[i].length) {
+          break;
+        }
+        if ((i + 1) == indices.length) {
+          break outer;
+        }
+        indices[i] = 0;
+        ++indices[i+1];
+      }
+
+      var opInputs = indices.map(function(i, j) { return subresults[j][i]; });
+      results.push(op.apply(null, opInputs));
+      ++indices[0];
+    }
+    return results;
+  }, subformulas);
+};
+
+ComplexFormula.plusAll = ComplexFormula.prototype.plusAll = function() {
+  return ComplexFormula._multiOpAll(Complex.plus, this, arguments);
 };
