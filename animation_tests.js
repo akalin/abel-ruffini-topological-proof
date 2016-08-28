@@ -3,6 +3,9 @@
 describe('animation', function() {
   function FakePoint(x, y) {
     this.points = [[x, y]];
+    this.attributes = {
+      fixed: false
+    };
   }
 
   FakePoint.prototype.X = function() {
@@ -354,6 +357,76 @@ describe('animation', function() {
       var p1 = new FakePoint(1, 1);
       var p2 = new FakePoint(2, 2);
       var a = new SwapAnimation(p1, p2);
+      var aInv = a.invert();
+      expect(aInv._th).toBe(-a._th);
+    });
+  });
+
+  describe('SwapElementAnimation', function() {
+    it('run', function() {
+      var p1 = new FakePoint(1, 1);
+      var p2 = new FakePoint(2, 2);
+      var p3 = new FakePoint(3, 3);
+      var ps = [ p1, p2, p3 ];
+
+      var startDoneBeforeSwap = false;
+      var swapDone = false;
+      var a = new SwapElementAnimation(ps, 0, 1, {
+        startCallback: function() {
+          if (!swapDone) {
+            startDoneBeforeSwap = true;
+          }
+        },
+        swapCallback: function() { swapDone = true; },
+        th: Math.PI/4
+      });
+
+      var done = false;
+      a.run(1000, function() { done = true; });
+
+      expect(startDoneBeforeSwap).toBe(true);
+      expect(swapDone).toBe(true);
+      expect(done).toBe(true);
+      expect(p1.points).toEqual([[1, 1], [1, 1], [2, 1], [2, 2]]);
+      expect(p2.points).toEqual([[2, 2], [2, 2], [1, 2], [1, 1]]);
+      expect(p3.points).toEqual([[3, 3]]);
+      expect(ps).toEqual([ p2, p1, p3 ]);
+    });
+
+    it('run with no callbacks', function() {
+      var p1 = new FakePoint(1, 1);
+      var p2 = new FakePoint(2, 2);
+      var ps = [ p1, p2 ];
+      var a = new SwapElementAnimation(ps, 0, 1, { th: Math.PI/4 });
+
+      // Should not try to run nonexistent callbacks.
+      a.run(1000);
+
+      expect(p1.points).toEqual([[1, 1], [1, 1], [2, 1], [2, 2]]);
+      expect(p2.points).toEqual([[2, 2], [2, 2], [1, 2], [1, 1]]);
+      expect(ps).toEqual([ p2, p1 ]);
+    });
+
+    it('invert', function() {
+      var p1 = new FakePoint(1, 1);
+      var p2 = new FakePoint(2, 2);
+      var ps = [ p1, p2 ];
+      var a = new SwapElementAnimation(ps, 0, 1, { th: Math.PI/4 }).invert();
+
+      var done = false;
+      a.run(1000, function() { done = true; });
+
+      expect(done).toBe(true);
+      expect(p1.points).toEqual([[1, 1], [1, 1], [1, 2], [2, 2]]);
+      expect(p2.points).toEqual([[2, 2], [2, 2], [2, 1], [1, 1]]);
+      expect(ps).toEqual([ p2, p1 ]);
+    });
+
+    it('invert with default', function() {
+      var p1 = new FakePoint(1, 1);
+      var p2 = new FakePoint(2, 2);
+      var ps = [ p1, p2 ];
+      var a = new SwapElementAnimation(ps, 0, 1);
       var aInv = a.invert();
       expect(aInv._th).toBe(-a._th);
     });

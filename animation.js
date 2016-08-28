@@ -101,11 +101,13 @@ function newCommutatorAnimation(a1, a2) {
   return new SequentialAnimation([a2, a1, a2.invert(), a1.invert()])
 }
 
+var _defaultSwapTh = Math.PI/12;
+
 function SwapAnimation(p1, p2, th) {
   this._p1 = p1;
   this._p2 = p2;
   if (th === undefined) {
-    th = Math.PI/12;
+    th = _defaultSwapTh;
   }
   this._th = th;
 }
@@ -123,4 +125,49 @@ SwapAnimation.prototype.run = function(time, doneCallback) {
 
 SwapAnimation.prototype.invert = function() {
   return new SwapAnimation(this._p1, this._p2, -this._th);
+};
+
+function SwapElementAnimation(a, i1, i2, options) {
+  this._a = a;
+  this._i1 = i1;
+  this._i2 = i2;
+  options = options || {};
+  this._startCallback = options.startCallback;
+  this._swapCallback = options.swapCallback;
+  var th = options.th;
+  if (th === undefined) {
+    th = _defaultSwapTh;
+  }
+  this._th = th;
+}
+
+SwapElementAnimation.prototype.run = function(time, doneCallback) {
+  var a = this._a;
+  var i1 = this._i1;
+  var i2 = this._i2;
+  var p1 = a[i1];
+  var p2 = a[i2];
+  var sa = new SwapAnimation(p1, p2, this._th);
+  if (this._startCallback !== undefined) {
+    this._startCallback();
+  }
+  var swapCallback = this._swapCallback;
+  sa.run(time, function() {
+    a[i1] = p2;
+    a[i2] = p1;
+    if (swapCallback !== undefined) {
+      swapCallback();
+    }
+    if (doneCallback !== undefined) {
+      doneCallback();
+    }
+  });
+};
+
+SwapElementAnimation.prototype.invert = function() {
+  return new SwapElementAnimation(this._a, this._i1, this._i2, {
+    startCallback: this._startCallback,
+    swapCallback: this._swapCallback,
+    th: -this._th
+  });
 };
