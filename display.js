@@ -137,8 +137,45 @@ Display.prototype._onRootUpdate = function() {
 };
 
 Display.prototype.swapRootOp = function(i, j, swapCallback) {
+  var resultsOnStart;
   return new SwapElementAnimation(this._rootPoints, i, j, {
-    swapCallback: swapCallback
+    startCallback: (function() {
+      resultsOnStart = this._resultPoints.map(function(p) {
+        return pointToComplex(p);
+      });
+    }).bind(this),
+    swapCallback: (function() {
+      this._onSwap(resultsOnStart);
+      if (swapCallback !== undefined) {
+        swapCallback(this);
+      }
+    }).bind(this)
+  });
+};
+
+Display.prototype._onSwap = function(resultsOnStart) {
+  var taken = {};
+  var permutation = this._resultPoints.map(function(p) {
+    var z = pointToComplex(p);
+    var minJ = -1;
+    var minDistSq = Infinity;
+    for (var j = 0; j < resultsOnStart.length; ++j) {
+      if (taken[j]) {
+        continue;
+      }
+      var distSq = z.minus(resultsOnStart[j]).absSq();
+      if (distSq < minDistSq) {
+        minJ = j;
+        minDistSq = distSq;
+      }
+    }
+    taken[minJ] = true;
+    return minJ;
+  });
+
+  var resultPoints = this._resultPoints;
+  this._resultPoints = permutation.map(function(j) {
+    return resultPoints[j];
   });
 };
 
@@ -248,4 +285,24 @@ Display.prototype.setFormula = function(formula) {
   this._formulaBoard.setBoundingBox(getContainingBox(results), true);
 
   return results.length;
+};
+
+Display.prototype._getPermutation = function(pointsBySubscript, points) {
+  // A simple quadratic algorithm is fine.
+  return points.map(function(p) {
+    for (var i = 0; i < pointsBySubscript.length; ++i) {
+      if (pointsBySubscript[i] == p) {
+        return i;
+      }
+    }
+  });
+};
+
+Display.prototype.getRootPermutation = function() {
+  return this._getPermutation(this._rootPointsBySubscript, this._rootPoints);
+};
+
+Display.prototype.getResultPermutation = function() {
+  return this._getPermutation(
+    this._resultPointsBySubscript, this._resultPoints);
 };

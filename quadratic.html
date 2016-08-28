@@ -34,6 +34,18 @@ var initialRoots = [ new Complex(1, 0), new Complex(0, 1) ];
 var display = new Display("rootBoard", "coeffBoard", "formulaBoard",
                           initialRoots, quadraticDiscriminantFormula.root(2));
 
+function updateRootAndResultList(display) {
+  var rootList = document.getElementById('rootList');
+  rootList.innerHTML = display.getRootPermutation().map(function(i) {
+    return 'r<sub>' + (i+1) + '</sub>';
+  }).join(', ');
+
+  var resultList = document.getElementById('resultList');
+  resultList.innerHTML = display.getResultPermutation().map(function(i) {
+    return 'x<sub>' + (i+1) + '</sub>';
+  }).join(', ');
+}
+
 var swapping = false;
 
 function swapRoots(clockwise) {
@@ -49,7 +61,7 @@ function swapRoots(clockwise) {
     elems[i].disabled = true;
   }
 
-  var op = display.swapRootOp(0, 1);
+  var op = display.swapRootOp(0, 1, updateRootAndResultList);
   if (clockwise) {
     op = op.invert();
   }
@@ -69,6 +81,7 @@ function switchFormula(formula) {
     return;
   }
   var numResults = display.setFormula(formula);
+  updateRootAndResultList();
   var traceXs = document.querySelectorAll('.traceX');
   for (var i = 0; i < traceXs.length; ++i) {
     traceXs[i].querySelector('input').checked = false;
@@ -105,7 +118,16 @@ function setTrace(event) {
     }
   }
 }
+
 </script>
+
+R = &lang; <span id="rootList">r<sub>1</sub>, r<sub>2</sub></span> &rang;
+
+<br />
+
+X = &lang; <span id="resultList">x<sub>1</sub>, x<sub>2</sub></span> &rang;
+
+<br />
 
 <button class="disableWhileSwapping" type="button" onclick="swapRoots(false);">
   ↺
