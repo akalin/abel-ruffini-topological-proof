@@ -69,16 +69,35 @@ function setTrace(display, event) {
   }
 }
 
+function isIdentityPermutation(permutation) {
+  for (var i = 0; i < permutation.length; ++i) {
+    if (permutation[i] != i) {
+      return false;
+    }
+  }
+  return true;
+}
+
 function updateRootAndResultList(display) {
+  var rootPermutation = display.getRootPermutation();
   var rootList = document.getElementById('rootList');
-  rootList.innerHTML = display.getRootPermutation().map(function(i) {
+  rootList.innerHTML = rootPermutation.map(function(i) {
     return 'r<sub>' + (i+1) + '</sub>';
   }).join(', ');
 
+  var resultPermutation = display.getResultPermutation();
   var resultList = document.getElementById('resultList');
-  resultList.innerHTML = display.getResultPermutation().map(function(i) {
+  resultList.innerHTML = resultPermutation.map(function(i) {
     return 'x<sub>' + (i+1) + '</sub>';
   }).join(', ');
+
+  var resultNote = document.getElementById('resultNote');
+  if (isIdentityPermutation(rootPermutation) ==
+      isIdentityPermutation(resultPermutation)) {
+    resultNote.innerHTML = '';
+  } else {
+    resultNote.innerHTML = '(Applied path rules out formula as a formula for a root.)';
+  }
 }
 
 function resetRootAndResultList(display) {
