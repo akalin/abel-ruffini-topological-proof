@@ -31,7 +31,7 @@ function switchFormula(display, formula) {
     return;
   }
   var numResults = display.setFormula(formula);
-  updateRootAndResultList(display);
+  resetRootAndResultList(display);
   var traceXs = document.querySelectorAll('.traceX');
   for (var i = 0; i < traceXs.length; ++i) {
     traceXs[i].querySelector('input').checked = false;
@@ -79,4 +79,9 @@ function updateRootAndResultList(display) {
   resultList.innerHTML = display.getResultPermutation().map(function(i) {
     return 'x<sub>' + (i+1) + '</sub>';
   }).join(', ');
+}
+
+function resetRootAndResultList(display) {
+  display.reorderPointsBySubscript();
+  updateRootAndResultList(display);
 }

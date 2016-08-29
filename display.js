@@ -306,3 +306,14 @@ Display.prototype.getResultPermutation = function() {
   return this._getPermutation(
     this._resultPointsBySubscript, this._resultPoints);
 };
+
+Display.prototype.reorderPointsBySubscript = function() {
+  // Avoid invalidating any existing references to this._rootPoints
+  // and this._resultPoints.
+  for (var i = 0; i < this._rootPoints.length; ++i) {
+    this._rootPoints[i] = this._rootPointsBySubscript[i];
+  }
+  for (var i = 0; i < this._resultPoints.length; ++i) {
+    this._resultPoints[i] = this._resultPointsBySubscript[i];
+  }
+};
