@@ -246,12 +246,6 @@ Display.prototype.enableTraceCoeff = function(i) {
     this._coeffPoints, this._coeffTracePoints, this._coeffTraceCurves, i);
 };
 
-Display.prototype.enableTraceResult = function(i) {
-  return this._enableTrace(
-    this._resultPointsBySubscript, this._resultTracePoints,
-    this._resultTraceCurves, i);
-};
-
 Display.prototype.disableTraceRoot = function(i) {
   return this._disableTrace(this._rootTracePoints, this._rootTraceCurves, i);
 };
@@ -260,9 +254,38 @@ Display.prototype.disableTraceCoeff = function(i) {
   return this._disableTrace(this._coeffTracePoints, this._coeffTraceCurves, i);
 };
 
-Display.prototype.disableTraceResult = function(i) {
-  return this._disableTrace(
-    this._resultTracePoints, this._resultTraceCurves, i);
+Display.prototype.setTraceResult = function(i, traceType) {
+  switch (traceType) {
+  case 'none':
+    this._disableTrace(this._resultTracePoints, this._resultTraceCurves, i);
+    return;
+
+  case 'trace':
+    if (this._resultTracePoints[i] === undefined) {
+      this._enableTrace(
+        this._resultPointsBySubscript, this._resultTracePoints,
+        this._resultTraceCurves, i);
+    }
+
+    this._resultTraceCurves[i].setAttribute({
+      fillColor: 'none',
+      fillOpacity: 1
+    });
+    return;
+
+  case 'fill':
+    if (this._resultTracePoints[i] === undefined) {
+      this._enableTrace(
+        this._resultPointsBySubscript, this._resultTracePoints,
+        this._resultTraceCurves, i);
+    }
+
+    this._resultTraceCurves[i].setAttribute({
+      fillColor: 'red',
+      fillOpacity: 0.1
+    });
+    return;
+  }
 };
 
 Display.prototype.setRootsFixed = function(newFixed) {
@@ -284,8 +307,8 @@ Display.prototype.setFormula = function(formula) {
 
   if (this._resultPointsBySubscript !== undefined) {
     for (var i = 0; i < this._resultPointsBySubscript.length; ++i) {
-      this._formulaBoard.removeObject(this._resultPointsBySubscript[i]);
-      this.disableTraceResult(i);
+      this._formulaBoard.removeObject(this._resultPoints[i]);
+      this.setTraceResult(i, 'none');
     }
   }
 

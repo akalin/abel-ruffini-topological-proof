@@ -402,12 +402,20 @@ Trace:
 </label>
 
 <label class="traceX">
-  <input type="checkbox" onchange="setTrace(display, event);" value="x1" />
+  <select name="x1" onchange="setResultTrace(display, event);">
+    <option value="none">None</option>
+    <option value="trace">Trace</option>
+    <option value="fill">Fill</option>
+  </select>
   x<sub>1</sub>
 </label>
 
 <label class="traceX">
-  <input type="checkbox" onchange="setTrace(display, event);" value="x2" />
+  <select name="x2" onchange="setResultTrace(display, event);">
+    <option value="none">None</option>
+    <option value="trace">Trace</option>
+    <option value="fill">Fill</option>
+  </select>
   x<sub>2</sub>
 </label>
 

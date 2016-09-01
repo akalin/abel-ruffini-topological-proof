@@ -37,7 +37,7 @@ function switchFormula(display, formula) {
   resetRootAndResultList(display);
   var traceXs = document.querySelectorAll('.traceX');
   for (var i = 0; i < traceXs.length; ++i) {
-    traceXs[i].querySelector('input').checked = false;
+    traceXs[i].querySelector('select').value = 'none';
     traceXs[i].style.display = ((i < numResults) ? '' : 'none');
   }
 }
@@ -62,14 +62,13 @@ function setTrace(display, event) {
       display.disableTraceCoeff(index);
     }
   }
-  if (type == 'x') {
-    --index;
-    if (enable) {
-      display.enableTraceResult(index);
-    } else {
-      display.disableTraceResult(index);
-    }
-  }
+}
+
+function setResultTrace(display, event) {
+  var name = event.target.name;
+  var index = parseInt(name.substring(1)) - 1;
+  var value = event.target.value;
+  display.setTraceResult(index, value);
 }
 
 function isIdentityPermutation(permutation) {
