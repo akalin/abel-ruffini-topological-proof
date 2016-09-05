@@ -34,6 +34,14 @@ var display = new Display(
 
 var op = display.swapRootOp(0, 1, updateRootAndResultList);
 var opInv = op.invert();
+
+var opInfos = [
+  {
+    name: '↺',
+    op: op,
+    time: 1000
+  }
+];
 </script>
 
 R = &lang; <span id="rootList">r<sub>1</sub>, r<sub>2</sub></span> &rang;
@@ -69,6 +77,15 @@ Reset root and result list
         onclick="runOp(display, opInv, 1000);">
   ↻
 </button>
+
+<br />
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="findFirstOpRulingOutSelectedFormula(display, opInfos);">
+  Find first op that rules out selected formula
+</button>
+
+<span id="findFirstOpStatus"></span>
 
 <br />
 

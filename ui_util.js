@@ -2,7 +2,7 @@
 
 var runningOp = false;
 
-function runOp(display, op, time) {
+function runOp(display, op, time, doneCallback) {
   if (runningOp) {
     return;
   }
@@ -22,6 +22,9 @@ function runOp(display, op, time) {
 
     for (var i = 0; i < elems.length; ++i) {
       elems[i].disabled = false;
+    }
+    if (doneCallback !== undefined) {
+      doneCallback();
     }
   });
 }
@@ -121,4 +124,63 @@ function resetRootAndResultList(display) {
   display.reorderPointsBySubscript();
   display.resetResultRotationCounters();
   updateRootAndResultList(display);
+}
+
+function checkOpRulesOutFormula(display, op, time, undoCallback, doneCallback) {
+  resetRootAndResultList(display);
+  runOp(display, op, time, function() {
+    var rootPermutation = display.getRootPermutation();
+    var resultPermutation = display.getResultPermutation();
+    var rulesOut = (isIdentityPermutation(rootPermutation) !=
+                    isIdentityPermutation(resultPermutation));
+    undoCallback();
+    runOp(display, op.invert(), time, function() {
+      doneCallback(rulesOut);
+    });
+  });
+}
+
+function findFirstOpRulingOutSelectedFormulaHelper(
+  display, opInfos, statusCallback, doneCallback) {
+  var i = 0;
+  var undoCallback = function() {
+    statusCallback(opInfos[i], true);
+  }
+  var _doneCallback = function(rulesOut) {
+    if (rulesOut) {
+      doneCallback(opInfos[i]);
+      return;
+    }
+    ++i;
+    if (i >= opInfos.length) {
+      doneCallback(null);
+      return;
+    }
+    statusCallback(opInfos[i], false);
+    checkOpRulesOutFormula(
+      display, opInfos[i].op, opInfos[i].time, undoCallback, _doneCallback);
+  };
+  statusCallback(opInfos[0]);
+  checkOpRulesOutFormula(
+    display, opInfos[0].op, opInfos[0].time, undoCallback, _doneCallback);
+}
+
+function findFirstOpRulingOutSelectedFormula(display, opInfos) {
+  var status = document.getElementById('findFirstOpStatus');
+  var statusCallback = function(opInfo, isUndo) {
+    if (isUndo) {
+      status.innerHTML = 'Undoing ' + opInfo.name + '...';
+    } else {
+      status.innerHTML = 'Trying ' + opInfo.name + '...';
+    }
+  };
+  var doneCallback = function(opInfo) {
+    if (opInfo === null) {
+      status.innerHTML = 'No op ruling out selected formula found';
+    } else {
+      status.innerHTML = opInfo.name + ' rules out selected formula';
+    }
+  };
+  findFirstOpRulingOutSelectedFormulaHelper(
+    display, opInfos, statusCallback, doneCallback);
 }

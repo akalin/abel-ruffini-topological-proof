@@ -53,6 +53,54 @@ var opC1 = newCommutatorAnimation(opB1, opB2);
 var opC2 = newCommutatorAnimation(opB2, opB3);
 var opC1Inv = opC1.invert();
 var opC2Inv = opC2.invert();
+
+var opInfos = [
+  {
+    name: 'A<sub>1</sub>',
+    op: opA1,
+    time: 1000
+  },
+  {
+    name: 'A<sub>2</sub>',
+    op: opA2,
+    time: 1000
+  },
+  {
+    name: 'A<sub>3</sub>',
+    op: opA3,
+    time: 1000
+  },
+  {
+    name: 'A<sub>4</sub>',
+    op: opA4,
+    time: 1000
+  },
+  {
+    name: 'B<sub>1</sub>',
+    op: opB1,
+    time: 4000
+  },
+  {
+    name: 'B<sub>2</sub>',
+    op: opB2,
+    time: 4000
+  },
+  {
+    name: 'B<sub>3</sub>',
+    op: opB3,
+    time: 4000
+  },
+  {
+    name: 'C<sub>1</sub>',
+    op: opC1,
+    time: 16000
+  },
+  {
+    name: 'C<sub>2</sub>',
+    op: opC2,
+    time: 16000
+  }
+];
 </script>
 
 R = &lang; <span id="rootList">
@@ -202,6 +250,15 @@ p = (8ac &minus; 3b<sup>2</sup>)/(8a<sup>2</sup>)
 <br />
 
 q = (b<sup>3</sup> &minus; 4abc + 8a<sup>2</sup>d)/(8a<sup>3</sup>)
+
+<br />
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="findFirstOpRulingOutSelectedFormula(display, opInfos);">
+  Find first op that rules out selected formula
+</button>
+
+<span id="findFirstOpStatus"></span>
 
 <br />
 

@@ -40,6 +40,24 @@ var opAInv = opA.invert();
 var opBInv = opB.invert();
 var opComAB = newCommutatorAnimation(opA, opB);
 var opComABInv = opComAB.invert();
+
+var opInfos = [
+  {
+    name: 'A',
+    op: opA,
+    time: 1000
+  },
+  {
+    name: 'B',
+    op: opB,
+    time: 1000
+  },
+  {
+    name: '[A, B]',
+    op: opComAB,
+    time: 4000
+  }
+];
 </script>
 
 R = &lang; <span id="rootList">
@@ -115,6 +133,15 @@ X = &lang; <span id="resultList">
 <br />
 
 &Delta;<sub>1</sub> = 2b<sup>3</sup> &minus; 9abc + 27a<sup>2</sup>d
+
+<br />
+
+<button class="disableWhileRunningOp" type="button"
+        onclick="findFirstOpRulingOutSelectedFormula(display, opInfos);">
+  Find first op that rules out selected formula
+</button>
+
+<span id="findFirstOpStatus"></span>
 
 <br />
 
