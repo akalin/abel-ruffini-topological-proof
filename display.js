@@ -32,7 +32,7 @@ function getContainingBox(zs) {
 }
 
 function Display(rootBoardDivID, coeffBoardDivID, formulaBoardDivID,
-                 initialRoots, formula) {
+                 initialRoots, formula, rotationCounterUpdateCallback) {
   var boardOptions = {
     axis: true,
     showCopyright: false,
@@ -78,10 +78,36 @@ function Display(rootBoardDivID, coeffBoardDivID, formulaBoardDivID,
 
   this._formulaBoard = JXG.JSXGraph.initBoard(formulaBoardDivID, boardOptions);
 
+  var resultRotationCounterPoint = this._formulaBoard.create(
+    'point', [0, 0], {
+      name: 'z_0',
+      size: 0.5,
+      color: 'blue'
+    });
+
+  this._resultRotationCounterOrigin = Complex.ZERO;
+  this._resultRotationCounterPoint = resultRotationCounterPoint;
+  this._formulaBoard.on(
+    'update', Display.prototype._onFormulaBoardUpdate.bind(this));
+  this._rotationCounterUpdateCallback = rotationCounterUpdateCallback;
+
   this.setFormula(formula);
 
   this._rootBoard.on('update', Display.prototype._onRootUpdate.bind(this));
 }
+
+Display.prototype.getRotationCounterOrigin = function() {
+  return this._resultRotationCounterOrigin;
+};
+
+Display.prototype._onFormulaBoardUpdate = function() {
+  var z = pointToComplex(this._resultRotationCounterPoint);
+  if (!z.equals(this._resultRotationCounterOrigin)){
+    this._resultRotationCounterOrigin = z;
+    this.resetResultRotationCounters();
+    this._rotationCounterUpdateCallback();
+  }
+};
 
 Display.prototype._updateFormula = function(coeffs) {
   return this._formula.update.apply(this._formula, coeffs);
@@ -131,7 +157,8 @@ Display.prototype._onRootUpdate = function() {
       points.x.push(coords[0]);
       points.y.push(coords[1]);
     }
-    this._resultRotationCounters[i].update(results[i]);
+    this._resultRotationCounters[i].update(
+      results[i].minus(this._resultRotationCounterOrigin));
   }
 
   this._formulaBoard.unsuspendUpdate();

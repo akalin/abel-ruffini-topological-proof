@@ -99,15 +99,22 @@ function updateRootAndResultList(display) {
     resultNote.innerHTML = '(Applied path rules out formula as a formula for a root.)';
   }
 
+  updateRotationCounterList(display);
+}
+
+function updateRotationCounterList(display) {
+  var resultPermutation = display.getResultPermutation();
   var rotationCounterList = document.getElementById('rotationCounterList');
+  var z0 = display.getRotationCounterOrigin();
+  var s = 'z<sub>0</sub> = ' + z0 + ', ';
   if (isIdentityPermutation(resultPermutation)) {
-    rotationCounterList.innerHTML =
-      display.getResultRotationCounters().map(function(rc, i) {
-        return 'Rot(x<sub>' + (i+1) + '</sub>) = ' + rc.k()
-      }).join(', ');
+    s += display.getResultRotationCounters().map(function(rc, i) {
+      return 'Rot(x<sub>' + (i+1) + '</sub>, z<sub>0</sub>) = ' + rc.k();
+    }).join(', ');
   } else {
-    rotationCounterList.innerHTML = 'Rot(x<sub>i</sub>) is undefined';
+    s += 'Rot(x<sub>i</sub>, z<sub>0</sub>) is undefined';
   }
+  rotationCounterList.innerHTML = s;
 }
 
 function resetRootAndResultList(display) {

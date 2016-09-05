@@ -28,8 +28,11 @@ var initialRoots = [
   new Complex(-1, -0.5), new Complex(0, 1), new Complex(0.5, 0.5)
 ];
 
-var display = new Display("rootBoard", "coeffBoard", "formulaBoard",
-                          initialRoots, newCubicCCubedFormula().root(3));
+var display = new Display(
+  "rootBoard", "coeffBoard", "formulaBoard", initialRoots,
+  newCubicCCubedFormula().root(3), function() {
+    updateRotationCounterList(display);
+  });
 
 var opA = display.swapRootOp(0, 1, updateRootAndResultList);
 var opB = display.swapRootOp(1, 2, updateRootAndResultList);
@@ -54,7 +57,10 @@ X = &lang; <span id="resultList">
 <br />
 
 <span id="rotationCounterList">
-  Rot(x<sub>1</sub>) = 0, Rot(x<sub>2</sub>) = 0, Rot(x<sub>3</sub>) = 0
+  z<sub>0</sub> = 0+0i,
+  Rot(x<sub>1</sub>, z<sub>0</sub>) = 0,
+  Rot(x<sub>2</sub>, z<sub>0</sub>) = 0,
+  Rot(x<sub>3</sub>, z<sub>0</sub>) = 0
 </span>
 
 <br />

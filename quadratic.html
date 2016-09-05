@@ -26,8 +26,11 @@
 
 var initialRoots = [ new Complex(1, 0), new Complex(0, 1) ];
 
-var display = new Display("rootBoard", "coeffBoard", "formulaBoard",
-                          initialRoots, quadraticDiscriminantFormula.root(2));
+var display = new Display(
+  "rootBoard", "coeffBoard", "formulaBoard", initialRoots,
+  quadraticDiscriminantFormula.root(2), function() {
+    updateRotationCounterList(display);
+  });
 
 var op = display.swapRootOp(0, 1, updateRootAndResultList);
 var opInv = op.invert();
@@ -43,7 +46,9 @@ X = &lang; <span id="resultList">x<sub>1</sub>, x<sub>2</sub></span> &rang;
 <br />
 
 <span id="rotationCounterList">
-  Rot(x<sub>1</sub>) = 0, Rot(x<sub>2</sub>) = 0
+  z<sub>0</sub> = 0+0i,
+  Rot(x<sub>1</sub>, z<sub>0</sub>) = 0,
+  Rot(x<sub>2</sub>, z<sub>0</sub>) = 0
 </span>
 
 <br />
