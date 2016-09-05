@@ -98,9 +98,20 @@ function updateRootAndResultList(display) {
   } else {
     resultNote.innerHTML = '(Applied path rules out formula as a formula for a root.)';
   }
+
+  var rotationCounterList = document.getElementById('rotationCounterList');
+  if (isIdentityPermutation(resultPermutation)) {
+    rotationCounterList.innerHTML =
+      display.getResultRotationCounters().map(function(rc, i) {
+        return 'Rot(x<sub>' + (i+1) + '</sub>) = ' + rc.k()
+      }).join(', ');
+  } else {
+    rotationCounterList.innerHTML = 'Rot(x<sub>i</sub>) is undefined';
+  }
 }
 
 function resetRootAndResultList(display) {
   display.reorderPointsBySubscript();
+  display.resetResultRotationCounters();
   updateRootAndResultList(display);
 }

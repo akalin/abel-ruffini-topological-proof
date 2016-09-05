@@ -131,6 +131,7 @@ Display.prototype._onRootUpdate = function() {
       points.x.push(coords[0]);
       points.y.push(coords[1]);
     }
+    this._resultRotationCounters[i].update(results[i]);
   }
 
   this._formulaBoard.unsuspendUpdate();
@@ -276,9 +277,12 @@ Display.prototype.setFormula = function(formula) {
     });
   }).bind(this));
   this._resultPoints = this._resultPointsBySubscript.slice();
-  // Both arrays below are indexed by subscript.
+  // All three arrays below are indexed by subscript.
   this._resultTracePoints = [];
   this._resultTraceCurves = [];
+  this._resultRotationCounters = results.map(function() {
+    return new RotationCounter();
+  });
 
   this._formulaBoard.unsuspendUpdate();
 
@@ -305,6 +309,16 @@ Display.prototype.getRootPermutation = function() {
 Display.prototype.getResultPermutation = function() {
   return this._getPermutation(
     this._resultPointsBySubscript, this._resultPoints);
+};
+
+Display.prototype.getResultRotationCounters = function() {
+  return this._resultRotationCounters.slice();
+};
+
+Display.prototype.resetResultRotationCounters = function() {
+  for (var i = 0; i < this._resultPoints.length; ++i) {
+    this._resultRotationCounters[i] = new RotationCounter();
+  }
 };
 
 Display.prototype.reorderPointsBySubscript = function() {
