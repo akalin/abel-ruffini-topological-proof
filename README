@@ -3,3 +3,5 @@ proof of the Abel-Ruffini theorem that there is no general solution in
 radicals to polynomial equations of degree five or higher.
 
 For now, it just contains a basic complex number class.
+
+Tests are in tests.html.
