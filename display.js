@@ -254,37 +254,60 @@ Display.prototype.disableTraceCoeff = function(i) {
   return this._disableTrace(this._coeffTracePoints, this._coeffTraceCurves, i);
 };
 
-Display.prototype.setTraceResult = function(i, traceType) {
+Display._setResultCurveAttributes = function(c, traceType) {
   switch (traceType) {
-  case 'none':
-    this._disableTrace(this._resultTracePoints, this._resultTraceCurves, i);
-    return;
-
   case 'trace':
-    if (this._resultTracePoints[i] === undefined) {
-      this._enableTrace(
-        this._resultPointsBySubscript, this._resultTracePoints,
-        this._resultTraceCurves, i);
-    }
-
-    this._resultTraceCurves[i].setAttribute({
+    c.setAttribute({
       fillColor: 'none',
       fillOpacity: 1
     });
     return;
 
   case 'fill':
-    if (this._resultTracePoints[i] === undefined) {
-      this._enableTrace(
-        this._resultPointsBySubscript, this._resultTracePoints,
-        this._resultTraceCurves, i);
-    }
-
-    this._resultTraceCurves[i].setAttribute({
+    c.setAttribute({
       fillColor: 'red',
       fillOpacity: 0.1
     });
-    return;
+  }
+};
+
+Display.prototype.setTraceResult = function(i, traceType) {
+  var oldCurves = this._resultTraceOldCurves[i] || [];
+  if (traceType == 'none') {
+    this._disableTrace(this._resultTracePoints, this._resultTraceCurves, i);
+    for (var j = 0; j < oldCurves.length; ++j) {
+      oldCurves[j].board.removeObject(oldCurves[j]);
+    }
+    this._resultTraceOldCurves = [];
+  }
+
+  if (this._resultTracePoints[i] === undefined) {
+    this._enableTrace(
+      this._resultPointsBySubscript, this._resultTracePoints,
+      this._resultTraceCurves, i);
+  }
+
+  Display._setResultCurveAttributes(this._resultTraceCurves[i], traceType);
+  for (var j = 0; j < oldCurves.length; ++j) {
+    Display._setResultCurveAttributes(oldCurves[j], traceType);
+  }
+};
+
+Display.prototype.startNewResultTraces = function() {
+  for (var i = 0; i < this._resultTracePoints.length; ++i) {
+    if (this._resultTraceCurves[i] === undefined) {
+      continue;
+    }
+    var oldCurve = this._resultTraceCurves[i];
+    var traceType =
+        (oldCurve.getAttribute('fillColor') == 'red') ? 'fill' : 'trace';
+    if (this._resultTraceOldCurves[i] === undefined) {
+      this._resultTraceOldCurves[i] = [];
+    }
+    this._resultTraceOldCurves[i].push(oldCurve);
+    this._resultTracePoints[i] = undefined;
+    this._resultTraceCurves[i] = undefined;
+    this.setTraceResult(i, traceType);
   }
 };
 
@@ -330,6 +353,7 @@ Display.prototype.setFormula = function(formula) {
   // All three arrays below are indexed by subscript.
   this._resultTracePoints = [];
   this._resultTraceCurves = [];
+  this._resultTraceOldCurves = [];
   this._resultRotationCounters = results.map(function() {
     return new RotationCounter();
   });
