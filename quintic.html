@@ -31,7 +31,7 @@ var initialRoots = [
  ];
 
 var display = new Display(
-  "rootBoard", "coeffBoard", "formulaBoard", initialRoots, newFC(), function() {
+  "rootBoard", "coeffBoard", "formulaBoard", initialRoots, newFD(), function() {
     updateRotationCounterList(display);
   });
 
@@ -215,6 +215,29 @@ function newPreFC4() {
 function newFC() {
   return newPreFC3().root(3);
 }
+
+// Has a rotation number with C_1, C_2, C_3, and C_4.
+function newPreFD1() {
+  return newFC().minusAll(1.3);
+}
+
+// Has a rotation number with C_5.
+function newPreFD2() {
+  return newFC().minusAll(0.8);
+}
+
+// Has a rotation number with all C_i.
+function newPreFD3() {
+  return ComplexFormula.times(
+    newPreFD1(),
+    newPreFD2()
+  );
+}
+
+// Ruled out by D_i.
+function newFD() {
+  return newPreFD3().root(2);
+}
 </script>
 
 R = &lang; <span id="rootList">
@@ -227,7 +250,10 @@ R = &lang; <span id="rootList">
 X = &lang; <span id="resultList">
   x<sub>1</sub>, x<sub>2</sub>,
   x<sub>3</sub>, x<sub>4</sub>,
-  x<sub>5</sub>, x<sub>6</sub>
+  x<sub>5</sub>, x<sub>6</sub>,
+  x<sub>7</sub>, x<sub>8</sub>,
+  x<sub>9</sub>, x<sub>10</sub>,
+  x<sub>11</sub>, x<sub>12</sub>
 </span> &rang;
 
 <br />
@@ -239,7 +265,13 @@ X = &lang; <span id="resultList">
   Rot(x<sub>3</sub>, z<sub>0</sub>) = 0,
   Rot(x<sub>4</sub>, z<sub>0</sub>) = 0,
   Rot(x<sub>5</sub>, z<sub>0</sub>) = 0,
-  Rot(x<sub>6</sub>, z<sub>0</sub>) = 0
+  Rot(x<sub>6</sub>, z<sub>0</sub>) = 0,
+  Rot(x<sub>7</sub>, z<sub>0</sub>) = 0,
+  Rot(x<sub>8</sub>, z<sub>0</sub>) = 0,
+  Rot(x<sub>9</sub>, z<sub>0</sub>) = 0,
+  Rot(x<sub>10</sub>, z<sub>0</sub>) = 0,
+  Rot(x<sub>11</sub>, z<sub>0</sub>) = 0,
+  Rot(x<sub>12</sub>, z<sub>0</sub>) = 0
 </span>
 
 <br />
@@ -521,10 +553,36 @@ f<sub>B</sub> &minus; 0.8
 </label>
 
 <label>
-<input checked class="disableWhileRunningOp" name="formula" type="radio"
+<input class="disableWhileRunningOp" name="formula" type="radio"
        onchange="switchFormula(display, newFC());" />
 f<sub>C</sub> =
 <sup>3</sup>&radic;((f<sub>B</sub> &minus; 0.5) (f<sub>B</sub> &minus; 0.8))
+</label>
+
+<br />
+
+<label>
+<input class="disableWhileRunningOp" name="formula" type="radio"
+       onchange="switchFormula(display, newPreFD1());" />
+f<sub>C</sub> &minus; 1.3
+</label>
+
+<label>
+<input class="disableWhileRunningOp" name="formula" type="radio"
+       onchange="switchFormula(display, newPreFD2());" />
+f<sub>C</sub> &minus; 0.8
+</label>
+
+<label>
+<input class="disableWhileRunningOp" name="formula" type="radio"
+       onchange="switchFormula(display, newPreFD3());" />
+(f<sub>C</sub> &minus; 1.3) (f<sub>C</sub> &minus; 0.8)
+</label>
+
+<label>
+<input checked class="disableWhileRunningOp" name="formula" type="radio"
+       onchange="switchFormula(display, newFD());" />
+f<sub>D</sub> = &radic;((f<sub>C</sub> &minus; 1.3) (f<sub>C</sub> &minus; 0.8))
 </label>
 
 <br />
@@ -622,6 +680,60 @@ Trace:
     <option value="fill">Fill</option>
   </select>
   x<sub>6</sub>
+</label>
+
+<label class="traceX">
+  <select name="x7" onchange="setResultTrace(display, event);">
+    <option value="none">None</option>
+    <option value="trace">Trace</option>
+    <option value="fill">Fill</option>
+  </select>
+  x<sub>7</sub>
+</label>
+
+<label class="traceX">
+  <select name="x8" onchange="setResultTrace(display, event);">
+    <option value="none">None</option>
+    <option value="trace">Trace</option>
+    <option value="fill">Fill</option>
+  </select>
+  x<sub>8</sub>
+</label>
+
+<label class="traceX">
+  <select name="x9" onchange="setResultTrace(display, event);">
+    <option value="none">None</option>
+    <option value="trace">Trace</option>
+    <option value="fill">Fill</option>
+  </select>
+  x<sub>9</sub>
+</label>
+
+<label class="traceX">
+  <select name="x10" onchange="setResultTrace(display, event);">
+    <option value="none">None</option>
+    <option value="trace">Trace</option>
+    <option value="fill">Fill</option>
+  </select>
+  x<sub>10</sub>
+</label>
+
+<label class="traceX">
+  <select name="x11" onchange="setResultTrace(display, event);">
+    <option value="none">None</option>
+    <option value="trace">Trace</option>
+    <option value="fill">Fill</option>
+  </select>
+  x<sub>11</sub>
+</label>
+
+<label class="traceX">
+  <select name="x12" onchange="setResultTrace(display, event);">
+    <option value="none">None</option>
+    <option value="trace">Trace</option>
+    <option value="fill">Fill</option>
+  </select>
+  x<sub>12</sub>
 </label>
 
 <br />
